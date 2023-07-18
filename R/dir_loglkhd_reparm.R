@@ -1,6 +1,6 @@
 #' ver0: Reparameterized Dirichlet distribution
 
-dir.lkhd      <- function(x, mu, theta) {
+dir.lkhd      <- function(x, mu, alpha) {
     #' @param x Data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet distribution. 
     #' @param mu A scalar parameter which represents the dispersion parameter of the Dirichlet distribution. 
     #' @param alpha A $p \times 1$ vector which is the mean parameter of Dirichlet distribution. 
