@@ -1,4 +1,4 @@
-dir.hessian<- function(x, mu, alpha){
+dir.hessian<- function(x, mu, alpha, param = "alpha"){
   #' Hessian matrix of Dirichlet distribution with respect to parameter alpha
   #' @param x The data matrix of size $p \times n$ which is generated from [p]-dimensional Dirichlet distribution. 
   #' @param mu A positive scalar parameter which represents the dispersion parameter of the Dirichlet distribution.  
