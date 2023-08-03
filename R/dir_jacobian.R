@@ -4,7 +4,7 @@ dir.jacobian <- function(x, mu, alpha, param = "alpha"){
     #' @param mu Scalar parameter of the Dirichlet distribution which represents the dispersion of the data. 
     #' @param alpha Vector of length p which represents the log-transformed mean vector of Dirichlet distribution. 
     #" @param param Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
-    #" @return a $p$ vector Jacobian with respect to mu or alpha 
+    #" @return a Jacobian, first-order partial derivatives with respect to param alpha, size of $p$ vector
     
     p          <- nrow(x)   # the number of parameters (theta
     ## Check to confirm data and parameter vector are of the same dimension
@@ -17,14 +17,13 @@ dir.jacobian <- function(x, mu, alpha, param = "alpha"){
     
  
     if (param == "alpha"){
-        for(i in 1:p){
-            jacobian[i] <- mu*sum(sum(log(x[i,]) - digamma(mu*theta[i]))* ifelse(i == i, theta[i]*(1-theta[i]), -theta[i]*theta[-i]))
-        }
-        
+        ident <- matrix(1, ncol = p, nrow = p)
+        diag(ident) <- 0
+            jacobian <- mu*theta*((theta*digamma(mu*theta))%*%ident - (1-theta)*(n*digamma(mu*theta) - rowSums(log(x))))
+            
     } else if (param == "mu"){
         jacobian <- n*digamma(mu) + sum(theta*rowSums(log(x)) - n*theta*digamma(mu*theta))
     }
     
     return(jacobian);
 }
-
