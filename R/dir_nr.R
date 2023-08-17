@@ -23,7 +23,11 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, , maxiters = 1e2, par
     if (param == "alpha"){
         # Initiate the values         
         alpha1            <- list();
-        alpha1[[1]]     <- log(rowMeans(x)) - log(rowMeans(x)[1])
+        if (is.null(alpha)){
+            alpha1[[1]]     <- log(rowMeans(x)) - log(rowMeans(x)[1])
+        } else {
+            alpha1[[1]] <- alpha
+        }
         Dir.lkhd[1]     <- dir.lkhd(x, mu, alpha=alpha1[[1]]) # loglikelihood of data x
         
         while (eps > tol & n.step <= maxiters){
@@ -50,10 +54,14 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, , maxiters = 1e2, par
         return(alpha.est)
     } else if (param == "mu"){
         mu1 <- list()        
-        # Initiate the values         
-        theta <- exp(alpha)/sum(exp(alpha))        
-        mu.hat <- (theta*(1 - theta))/apply(x, 1, var)  - 1
-        mu1[1]          <-  mean(mu.hat) 
+        # Initiate the values 
+        if (is.null(mu)){
+            theta <- exp(alpha)/sum(exp(alpha))        
+            mu.hat <- (theta*(1 - theta))/apply(x, 1, var)  - 1
+            mu1[1]          <-  mean(mu.hat)
+        } else {
+            mu1[1] <- mu
+        }
         Dir.lkhd[1]     <- dir.lkhd(x, mu1[1], alpha) # loglikelihood of data x        
         while (eps > tol & n.step <= maxiters){   
             n.step <- n.step + 1;
