@@ -1,4 +1,4 @@
-dir.nr <- function(x, mu, alpha, tol = 1e-4, , maxiters = 1e2, param = "alpha"){
+dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, , maxiters = 1e2, param = "alpha"){
     #' Newton-Rapshon algorithm to estimate parameter alpha (or theta)
     #' @parm x A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet distribution. 
     #' @param mu A scalar parameter which represents the dispersion parameter of the Dirichlet distribution
@@ -66,7 +66,7 @@ dir.nr <- function(x, mu, alpha, tol = 1e-4, , maxiters = 1e2, param = "alpha"){
             } else {
                 step.size <- step.size.check[1]
             }
-            mu1[n.step] <- mu[n.step - 1] = step.size*Q            
+            mu1[n.step] <- mu[n.step - 1] - step.size*Q            
             step.size.vector[n.step - 1] <- step.size
             
             Dir.lkhd[n.step] <- dir.lkhd(x, mu = mu1[n.step], alpha = alpha)
