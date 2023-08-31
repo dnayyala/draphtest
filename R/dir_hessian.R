@@ -40,7 +40,6 @@ dir.hessian<- function(x, mu, alpha, param = "alpha"){
          diag(hessian) <-mu*theta[-1]*(-n*mu*theta[-1]*(Q^2 %*% trigamma(mu*theta)) + (1- 2*theta[-1])*(Q%*%W))
 
     } else if (param == "mu"){
-        hessian   <- matrix(NA, nrow = p-1, ncol = p-1)  ## matrix(NA, nrow = p, ncol = p) 
         hessian    <- n*(trigamma(mu) - sum(theta^2 * trigamma(mu*theta) ))
     }
     
