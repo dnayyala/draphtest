@@ -35,7 +35,7 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
         }
  
         Dir.lkhd <- c();
-        Dir.lkhd[1] <- dir.lkhd(x, mu=mu[1], alpha=alpha1[[1]]) # loglikelihood of data x
+        Dir.lkhd[1] <- dir.lkhd(x, mu=mu1[1], alpha=alpha1[[1]]) # loglikelihood of data x
         
         
         step.size.vector  <- c();
