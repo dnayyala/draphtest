@@ -37,39 +37,37 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
     Dir.lkhd <- c();
     Dir.lkhd[1] <- dir.lkhd(x, mu=mu1[1], alpha=alpha1[[1]]) # loglikelihood of data x
     
-    
-    step.size.vector  <- c();
     n.step   <- 1; 
     eps      <- 1e2;   # Difference in function between iterations
     
     while (eps > tol & n.step <= maxiters){
         n.step    <- n.step + 1;
-        step.size <- 1
         
         ## Fix mu and update alpha first 
         Q  <- solve(dir.hessian(x, mu=as.numeric(mu1[n.step-1]), alpha=alpha1[[n.step - 1]], param="alpha"), dir.jacobian(x, mu=as.numeric(mu1[n.step-1]), alpha=alpha1[[n.step - 1]], param="alpha"))
-        alpha1[[n.step]] <-  c(0, alpha1[[n.step -1]][2:p] - step.size*Q);
-        ## Check if updated estimate is positive for different step sizes.
-        step.size.check <- 10^(-(1:6))[(sapply(1:6, \(x) as.numeric(mu1[n.step -1]) - (10^(-x))*Q) >= 0)]
-        if (length(step.size.check) == 0){
-            step.size == 0
-        } else {
-            step.size <- step.size.check[1]
+        ## Check if updated estimate is increasing the likelihood and not decreasing.        
+        step.size <- 1
+        step.size.check <- TRUE
+        while (step.size.check && step.size >= 1e-6){
+            alpha1[[n.step]] <-  c(0, alpha1[[n.step -1]][2:p] - step.size*Q);
+            step.size.check <- ((dir.lkhd(x, mu=as.numeric(mu1[n.step-1]), alpha=alpha1[[n.step]]) - dir.lkhd(x, mu=as.numeric(mu1[n.step-1]), alpha=alpha1[[n.step-1]])) <= 0)
+            step.size <- step.size*1e-1
+        }
+        if (step.size.check){
+            alpha1[[n.step]] <- alpha[[n.step - 1]]
         }
         
         ## Fix alpha and update mu
         W  <- dir.jacobian(x, mu=as.numeric(mu1[n.step - 1]), alpha=alpha1[[n.step]], param = "mu")/dir.hessian(x, mu=as.numeric(mu1[n.step - 1]), alpha=alpha1[[n.step]], param = "mu")
-        
+        ## Check if updated estimate is positive for different step sizes.        
         step.size <- 1
-        ## Check if updated estimate is positive for different step sizes.
         step.size.check <- 10^(-(1:6))[(sapply(1:6, \(x) as.numeric(mu1[n.step -1]) - (10^(-x))*W) >= 0)]
         if (length(step.size.check) == 0){
             step.size == 0
         } else {
             step.size <- step.size.check[1]
         }
-        mu1[n.step] <- mu1[n.step - 1] - step.size*W            
-        step.size.vector[n.step - 1] <- step.size
+        mu1[n.step] <- mu1[n.step - 1] - step.size*W  
         
         Dir.lkhd[n.step] <- dir.lkhd(x, mu=as.numeric(mu1[n.step]), alpha=alpha1[[n.step]])
         eps <-  (Dir.lkhd[n.step] - Dir.lkhd[n.step - 1]) / sqrt(abs(Dir.lkhd[n.step -1 ]))
