@@ -54,7 +54,7 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
             step.size <- step.size*1e-1
         }
         if (step.size.check){
-            alpha1[[n.step]] <- alpha[[n.step - 1]]
+            alpha1[[n.step]] <- alpha1[[n.step - 1]]
         }
         
         ## Fix alpha and update mu
