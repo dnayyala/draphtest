@@ -37,7 +37,7 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
       est.cov  <- solve(fisher)
       diff     <-  as.matrix(alpha.x[2:p] - alpha[2:p]) 
     
-      test.stat   <-  n* t(diff) %*% solve(est.cov) %*% diff
+      test.stat   <- t(diff) %*% solve(est.cov) %*% diff
       p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
       
     } else if (type == "two"){
@@ -58,7 +58,7 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
     
       diff        <-  as.matrix(alpha.x[2:p] - alpha.y[2:p]) 
       
-      test.stat   <-   t(diff) %*% solve(1/n*est.cov.x + 1/m *est.cov.y) %*% diff
+      test.stat   <-   t(diff) %*% solve(est.cov.x + est.cov.y) %*% diff
       p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
     }  
   result <- NULL;
