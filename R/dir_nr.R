@@ -8,7 +8,6 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
     #' @param param Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
     #' @return the function will return a $p \times 1$ vector containing the estimate of the param alpha and a the estimate of mu
     
-    
     p <- nrow(x)
     # Initiate the values         
     alpha1 <- list();
@@ -28,7 +27,7 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
     # Initiate the values 
     if (is.null(mu)){
         theta  <- exp(alpha1[[1]])/sum(exp(alpha1[[1]]))        
-        mu.hat <- (theta*(1-theta))/apply(x, 1, var)  - 1
+        mu.hat <- ((theta*(1-theta))/apply(x, 1, var)  - 1)
         mu1[1] <-  mean(mu.hat)
     } else {
         mu1[1] <- mu
@@ -51,6 +50,8 @@ dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
         while (step.size.check && step.size >= 1e-6){
             alpha1[[n.step]] <-  c(0, alpha1[[n.step -1]][2:p] - step.size*Q);
             step.size.check <- ((dir.lkhd(x, mu=as.numeric(mu1[n.step-1]), alpha=alpha1[[n.step]]) - dir.lkhd(x, mu=as.numeric(mu1[n.step-1]), alpha=alpha1[[n.step-1]])) <= 0)
+            step.size.check <- is.na(step.size.check)
+
             step.size <- step.size*1e-1
         }
         if (step.size.check){
