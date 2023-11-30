@@ -8,8 +8,13 @@ dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alp
     #' @param alpha.x Vector of length p which represents the log-transformed mean vector of x.  
     #' @param alpha.y Vector of length p which represents the log-transformed mean vector of y. 
     #' @param type If ```type``` is  set as ```one```, the function will return a one sample test result, else if ```type``` is  set as ```two``` then the function will return two samples test result.
-    #' @return the function will return test statistic, p value and the result of the Likelihood-ratio test.
-    p <- length(alpha) # the number of parameters
+    #' @return the function will return a list with two elements
+    #' \itemize{
+    #'    \item test statistic,
+    #'    \item p value
+    #' }
+    
+  p <- length(alpha) # the number of parameters
     
     if (is.null(mu.y)){
         type = "one"
@@ -28,7 +33,7 @@ dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alp
                  dir.lkhd(x=x, mu=mu.x, alpha = alpha) # log-likelihood under the null 
                - dir.lkhd(x=x, mu=mu.x, alpha = alpha.x)) # log-likelihood under the alternative
  
-    p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
+    p.value   <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
     
     } else if (type == "two"){
         
