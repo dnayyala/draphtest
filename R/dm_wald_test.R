@@ -1,4 +1,4 @@
-dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = NULL,  type = "one"){
+dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y = NULL,  type = "one"){
     #' Wald-type test to parameter alpha
     #' @parm x A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet-Multinomial distribution. 
     #' @parm y A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet-Multinomial distribution. 
@@ -13,6 +13,8 @@ dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = NU
    
     p <- nrow(x) 
     n <- ncol(x) 
+    X.plus <- colSums(x)
+    N      <- mean(X.plus)  # Total sum 
     
     if (is.null(mu.y)){
         type == "one"
@@ -20,7 +22,7 @@ dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = NU
         type == "two"
     }
     
-    if (is.null(alpha)){
+    if (is.null(alpha.null)){
         type == "two"
     } else {
         type == "one"
@@ -28,30 +30,33 @@ dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = NU
     
     if (type == "one"){
         ## Check if data and parameter dimensions match
-        if (length(alpha.x) && length(alpha) != p){
+        if (length(alpha.x) && length(alpha.null) != p){
             stop("Data and parameter dimensions do not match.")
         }
         
-    fisher  <- -dm.hessian(x, mu, alpha.x, param = "alpha")/n # Fisher information matrix of data x 
-    est.cov <- solve(fisher)
-    diff    <- as.matrix(alpha.x[2:p] - alpha[2:p]) 
+    fisher  <- -dm.hessian(x, mu, alpha.x, param = "alpha") # Fisher information matrix of data x 
+    diff    <- as.matrix(alpha.x[2:p] - alpha.null[2:p]) 
 
-    test.stat   <-  n*t(diff) %*% (fisher) %*% diff
+    test.stat   <-  t(diff) %*% (fisher) %*% diff
     p.value     <-  pchisq(test.stat, df=p-1, lower.tail=FALSE) 
   
     } else if (type == "two"){
     
     m <- ncol(y) 
     
-    fisher.x  <- - dm.hessian(x, mu.x, alpha.x, param = "alpha")/n # Fisher information matrix of data x
-    fisher.y  <- - dm.hessian(y, mu.y, alpha.y, param = "alpha")/m # Fisher information matrix of data x
+    y.plus <- colSums(x)
+    M      <- mean(y.plus)  # Total sum 
+    
+    
+    fisher.x  <- - dm.hessian(x, mu.x, alpha.x, param = "alpha")# Fisher information matrix of data x
+    fisher.y  <- - dm.hessian(y, mu.y, alpha.y, param = "alpha")# Fisher information matrix of data x
     
     est.cov.x     <-  solve(fisher.x)
     est.cov.y     <-  solve(fisher.y)
   
     diff        <-  as.matrix(alpha.x[2:p] - alpha.y[2:p])
   
-    test.stat   <-   t(diff) %*% solve(1/n*est.cov.x + 1/m*est.cov.y) %*% diff
+    test.stat   <-   t(diff) %*% solve(est.cov.x + est.cov.y) %*% diff
     p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
 }
     
