@@ -10,7 +10,7 @@ dm.lkhd <- function(x, mu, alpha) {
     }
     
     n       <- ncol(x)   # sample size of date
-    theta   <- exp(alpha)/sum(exp(alpha))
+    theta   <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
     X.plus  <- colSums(x)
     lkhd    <- sum(lgamma(mu) + lgamma(X.plus+1) - lgamma(X.plus+mu) + colSums(lgamma(x + mu*theta) - lgamma(mu * theta) - lgamma(x+1)))
     
