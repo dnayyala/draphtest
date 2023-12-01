@@ -25,14 +25,7 @@ dm.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
     if (length(alpha1[[1]]) != p){
         stop("Data and parameter dimensions do not match")
     }
-    # mu1 <- c()        
-    # # Initiate the values 
-    # if (is.null(mu)){
-    #     mu1[1] <-   mean(x)
-    # } else {
-    #     mu1[1] <- mu
-    # }
-    
+
     mu1 <- c()        
     # Initiate the values 
     if (is.null(mu)){
