@@ -15,10 +15,10 @@ dir.hessian<- function(x, mu, alpha, param = "alpha"){
     n <- ncol(x)   # sample size of x
     
     ## Convert the log-mean parameter to mean
-    theta   <- exp(alpha)/sum(exp(alpha))
+    theta <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
     hessian <- matrix(NA, nrow = p-1, ncol = p-1)
     if (param == "alpha"){
-       
+        
         q       <- diag(1, p)
         W       <- n*digamma(mu*theta) - rowSums(log(x))
         Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
@@ -30,19 +30,18 @@ dir.hessian<- function(x, mu, alpha, param = "alpha"){
             for(l in 2:p){
                 t_kl <- theta - q[k,] - q[l,]
                 hessian[k-1,l-1] <- mu*theta[k]*theta[l]*(-n*mu*((theta*t_kl)%*%trigamma(mu*theta))
-                                    + (2*theta - q[k,] - q[l,]) %*% W )
+                                                          + (2*theta - q[k,] - q[l,]) %*% W )
             }
         }
         
-
-     
+        
+        
         #' Diagonal elements of Hessian Matrix
-         diag(hessian) <-mu*theta[-1]*(-n*mu*theta[-1]*(Q^2 %*% trigamma(mu*theta)) + (1- 2*theta[-1])*(Q%*%W))
-
+        diag(hessian) <-mu*theta[-1]*(-n*mu*theta[-1]*(Q^2 %*% trigamma(mu*theta)) + (1- 2*theta[-1])*(Q%*%W))
+        
     } else if (param == "mu"){
         hessian    <- n*(trigamma(mu) - sum(theta^2 * trigamma(mu*theta) ))
     }
     
     return(hessian);
 }
-
