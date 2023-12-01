@@ -6,17 +6,17 @@ dm.jacobian <- function(x, mu, alpha, param = "alpha"){
     #' @param param Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
     #' @return If ```param``` is set as ```alpha```, the function will return a $(p-1) \times 1$ vector of Jacobian, else if ```param``` is set as ```mu```, the function will return a scalar of Jacobian.
     
-    n       <- ncol(x)   # sample size of date
-    theta   <- exp(alpha)/sum(exp(alpha))
+    n  <- ncol(x)   # sample size of date
+    p  <- nrow(x)
+    
+    theta <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
     X.plus  <- colSums(x)
     
     ## Check to confirm data and parameter vector are of the same dimension
     if (length(alpha) != p){
         stop("Data and parameter dimensions do not match.")
     }
-    
-    n     <- ncol(x)   # sample size of x
-    theta <- exp(alpha)/sum(exp(alpha)) 
+
     jacobian <- numeric(nrow(x))
     
     
@@ -25,7 +25,7 @@ dm.jacobian <- function(x, mu, alpha, param = "alpha"){
         Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
         diag(Q) <- diag(Q)-1
         Q       <- Q[-1,]
-        m       <- n*digamma(mu*theta) + rowSums(digamma(x + mu*theta))
+        m       <- rowSums(digamma(x + mu*theta)) - n*digamma(mu*theta)
         
         jacobian <- mu*theta[-1] * (Q%*%m)
         
