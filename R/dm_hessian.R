@@ -15,13 +15,13 @@ dm.hessian<- function(x, mu, alpha, param = "alpha"){
     n <- ncol(x)   # sample size of x
     
     ## Convert the log-mean parameter to mean
-    theta   <- exp(alpha)/sum(exp(alpha))
+    theta <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
     hessian <- matrix(NA, nrow = p-1, ncol = p-1)
     if (param == "alpha"){
         
         q       <- diag(1, p)
-        m       <- n*digamma(mu*theta) + rowSums(digamma(x + mu*theta))
-        v       <- n*trigamma(mu*theta) + rowSums(digamma(x + mu*theta))
+        m       <- rowSums(digamma(x + mu*theta)) - n*digamma(mu*theta)
+        v       <- rowSums(trigamma(x + mu*theta)) - n*trigamma(mu*theta)
         Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
         diag(Q) <- diag(Q)-1
         Q       <- Q[-1,]  
@@ -29,13 +29,14 @@ dm.hessian<- function(x, mu, alpha, param = "alpha"){
         #' Off-diagonal elements of Hessian Matrix
         for(k in 2:p){
             for(l in 2:p){
-                hessian[k-1,l-1] <- -mu*theta[k]*theta[l]*((theta - q[k,])%*%m -(theta - q[l,])%*%(m + mu*(theta - q[k,])*v))
-            }
-        }
+                #hessian[k-1,l-1] <- -mu*theta[k]*theta[l]*((theta - q[k,])%*% m -(theta - q[l,])%*%(m + mu*(theta - q[k,])*v))
+                hessian[k-1,l-1] <- mu*theta[k]*theta[l]*((2*theta - q[k,] - q[l,])%*%m + 
+                        mu*((theta*(theta - q[k,] - q[l,])) %*%v))
+            }}
         
             
         #' Diagonal elements of Hessian Matrix
-        diag(hessian) <- -mu* theta[-1]*((1-2*theta[-1])*(Q %*% m) + mu* theta[-1]*(Q^2 %*% v))
+        diag(hessian) <- mu* theta[-1]*((2*theta[-1]-1)*(Q %*% m) + mu* theta[-1]*(Q^2 %*% v))
         
         
     } else if (param == "mu"){
@@ -44,4 +45,3 @@ dm.hessian<- function(x, mu, alpha, param = "alpha"){
     
     return(hessian);
 }
-
