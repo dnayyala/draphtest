@@ -9,7 +9,7 @@ dir.lkhd      <- function(x, mu, alpha) {
         stop("Data and parameter dimensions do not match")
     }
     
-    theta <- exp(alpha)/sum(exp(alpha))
+    theta <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
     n     <- ncol(x)   # sample size of date
     lkhd  <- n*lgamma(mu) -n*sum(lgamma(mu*theta)) + sum(t(mu*theta-1)%*%log(x))
     
