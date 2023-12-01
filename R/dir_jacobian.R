@@ -13,7 +13,7 @@ dir.jacobian <- function(x, mu, alpha, param = "alpha"){
         stop("Data and parameter dimensions do not match.")
     }
     n     <- ncol(x)   # sample size of x
-    theta <- exp(alpha)/sum(exp(alpha))
+    theta <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
     jacobian <- numeric(nrow(x))
     
     
@@ -32,4 +32,3 @@ dir.jacobian <- function(x, mu, alpha, param = "alpha"){
     
     return(jacobian);
 }
-
