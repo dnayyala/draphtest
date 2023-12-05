@@ -1,0 +1,17 @@
+Package: draphtest
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.1
+Authors@R: c(
+    person("Deepak Nag", "Ayyala" , "deepaknagayyala@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7251-580X")),
+    person("Bich Na", "Choi", "", role = c("aut"),
+           comment = c(ORCID = "xxxxx")),
+    person("Vy", "Ong", "", role = c("ctb"),
+           comment = c(ORCID = "xxxxx")),
+    )       
+Description: What the package does (one paragraph).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: stats, doParallel, foreach
