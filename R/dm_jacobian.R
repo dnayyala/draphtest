@@ -31,9 +31,8 @@ dm.jacobian <- function(x, mu, alpha, param = "alpha"){
     
   } else if (param == "mu"){
     #' Jacobian in terms of parameter mu
-    jacobian <- sum(digamma(mu)-digamma(X.plus+mu) + colSums(theta*digamma(x + mu*theta) - theta*digamma(mu*theta)))
+    jacobian <- as.numeric(n*digamma(mu) - sum(digamma(X.plus + mu)) + (theta%*%m))
   }
   
   return(jacobian);
 }
-
