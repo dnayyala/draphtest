@@ -18,8 +18,7 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
   theta <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
   hessian <- matrix(NA, nrow = p-1, ncol = p-1)
   if (param == "alpha"){
-    
-    I       <- diag(1, p) # Identity matrix
+
     m       <- rowSums(digamma(x + mu*theta)) - n*digamma(mu*theta)
     b       <- rowSums(trigamma(x + mu*theta)) - n*trigamma(mu*theta)
     Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
@@ -29,7 +28,7 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
     #' Off-diagonal elements of Hessian Matrix
     for(u in 2:p){
       for(v in 2:p){
-        e_uv <- I[u,] + I[v, ]
+        e_uv <- replace(numeric(p), c(u,v), 1) 
         hessian[u-1,v-1] <- mu*theta[u]*theta[v]*((2*theta - e_uv)%*%m + mu*(t(theta*(theta-e_uv)) %*% b))
       }   
     }
@@ -45,3 +44,6 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
   
   return(hessian);
 }
+
+  
+  
