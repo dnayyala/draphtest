@@ -19,7 +19,7 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
   hessian <- matrix(NA, nrow = p-1, ncol = p-1)
   if (param == "alpha"){
     
-    I       <- diag(1, p)
+    I       <- diag(1, p) # Identity matrix
     m       <- rowSums(digamma(x + mu*theta)) - n*digamma(mu*theta)
     b       <- rowSums(trigamma(x + mu*theta)) - n*trigamma(mu*theta)
     Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
@@ -31,8 +31,8 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
       for(v in 2:p){
         e_uv <- I[u,] + I[v, ]
         hessian[u-1,v-1] <- mu*theta[u]*theta[v]*((2*theta - e_uv)%*%m + mu*(t(theta*(theta-e_uv)) %*% b))
-        
-      }}
+      }   
+    }
     
     
     #' Diagonal elements of Hessian Matrix
@@ -40,7 +40,7 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
     
     
   } else if (param == "mu"){
-    hessian    <- n*(trigamma(mu) - trigamma(X.plus + mu)+ colSums(theta^2 * trigamma(x+mu*theta) -theta^2 * trigamma(mu*theta) ))
+    hessian    <- n*trigamma(mu) - sum(trigamma(X.plus + mu)) + (theta^2 %*% b)
   }
   
   return(hessian);
