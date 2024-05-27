@@ -17,16 +17,15 @@ dm.jacobian <- function(x, mu, alpha, param = "alpha"){
     stop("Data and parameter dimensions do not match.")
   }
   
+  Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
+  diag(Q) <- diag(Q)-1
+  Q       <- Q[-1,]
+  m       <- rowSums(digamma(x + mu*theta)) - n*digamma(mu*theta)
+  
   jacobian <- numeric(nrow(x))
-  
-  
+
   if (param == "alpha"){
     #' Jacobian in terms of parameter alpha
-    Q       <- matrix(theta, nrow=p, ncol=p, byrow=TRUE)
-    diag(Q) <- diag(Q)-1
-    Q       <- Q[-1,]
-    m       <- rowSums(digamma(x + mu*theta)) - n*digamma(mu*theta)
-    
     jacobian <- - mu*theta[-1] * (Q%*%m)
     
   } else if (param == "mu"){
