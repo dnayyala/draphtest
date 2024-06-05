@@ -51,7 +51,7 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
       m           <- ncol(y) 
       
       fisher.x      <- - dir.hessian(x, mu.x, alpha.x, param = "alpha")/n # Fisher information matrix of data x
-      fisher.y      <- - dir.hessian(y, mu.y, theta.y, param = "alpha")/m # Fisher information matrix of data x
+      fisher.y      <- - dir.hessian(y, mu.y, alpha.y, param = "alpha")/m # Fisher information matrix of data x
       
       est.cov.x     <-  solve(fisher.x)
       est.cov.y     <-  solve(fisher.y)
