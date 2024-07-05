@@ -1,6 +1,6 @@
 dir.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
     #' Newton-Rapshon algorithm to estimate parameter alpha (or theta)
-    #' @parm x A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet distribution. 
+    #' @parm x A data matrix of size $(p x n)$ generated from [p]-dimensional Dirichlet distribution. 
     #' @param mu A scalar parameter which represents the dispersion parameter of the Dirichlet distribution
     #' @param alpha Vector of length p which represents the log-transformed mean vector of Dirichlet distribution. 
     #' @param tol Tolerance cutoff for determining convergence of the Newton-Raphson algorithm
