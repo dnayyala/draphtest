@@ -1,12 +1,12 @@
 dm.nr <- function(x, mu = NULL, alpha = NULL, tol = 1e-4, maxiters = 1e2){
     #' Newton-Rapshon algorithm to estimate parameter alpha (or theta)
-    #' @parm x A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet-multinomial distribution. 
+    #' @parm x A data matrix of size (p x n) generated from [p]-dimensional Dirichlet-multinomial distribution. 
     #' @param mu A scalar parameter which represents the dispersion parameter of the distribution
     #' @param alpha Vector of length p which represents the log-transformed mean vector of the distribution. 
     #' @param tol Tolerance cutoff for determining convergence of the Newton-Raphson algorithm
     #' @param maxiters Maximum number of iterations for the algorithm. Default is set at 100.
     #' @param param Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
-    #' @return the function will return a $p \times 1$ vector containing the estimate of the param alpha and a the estimate of mu
+    #' @return the function will return a (p x 1) vector containing the estimate of the param alpha and a the estimate of mu
     p      <- nrow(x)
     X.plus <- colSums(x)
     N      <- mean(X.plus)  # Total sum 
