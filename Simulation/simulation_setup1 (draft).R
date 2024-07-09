@@ -17,15 +17,7 @@ library(doParallel)
 library(doRNG)
 library(gtools)
 library(ICSNP)
-
-source("dir_lkhd.R")
-source("dir_hessian.R")
-source("dir_jacobian.R")
-source("dir_nr.R")
-source("random_proj.R")
-source("dir_wald_test.R")
-source("dir_lrt.R")
-source("ortho_randproj.R")
+library(draphtest)
 
 
 start.time <- Sys.time()
