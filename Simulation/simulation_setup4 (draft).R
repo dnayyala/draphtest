@@ -13,15 +13,7 @@ library(doParallel)
 library(doRNG)
 library(gtools)
 library(ICSNP)
-
-source("dm_lkhd.R")
-source("dm_jacobian.R") # Jacobian with constant term (mu)
-source("dm_hessian.R")
-source("dm_nr.R")
-source("random_proj.R")
-source("dm_wald_test.R")
-source("dm_lrt.R")
-source("ortho_randproj.R")
+library(draphtest)
 
 ## Set values
 p        <- 100 
@@ -76,12 +68,18 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
     prob       <- rdirichlet(1, mu.x*theta.null)
     x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
   }
-  
+
   y.boot  <- t(rdirichlet(n, mu.y*theta.null))
   for(i in 1:n){
     prob       <- rdirichlet(1, mu.y*theta.null)
     y.boot[,i] <- rmultinom(1, size = Y.plus[i], prob)
   }
+  
+  #' Adjustment bootsratp sample for RAPTT
+  #' Convert the projected data to mean vector for Hotelling's T2 test
+  x.raptt   <- fnc.adj(x.boot, X.plus)
+  y.raptt   <- fnc.adj(y.boot, Y.plus) 
+  
   
   for(m in 1:m.random){
     RP.orth <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT 
@@ -90,8 +88,8 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
     rx.dir <- RP.prop %*% x.boot
     ry.dir <- RP.prop %*% y.boot
     
-    rx.raptt  <- RP.orth %*% x.boot
-    ry.raptt  <- RP.orth %*% y.boot
+    rx.raptt  <- RP.orth %*% x.raptt
+    ry.raptt  <- RP.orth %*% y.raptt
     
     r.null.theta <- RP.prop %*% theta.null
     r.null.dir   <- log(r.null.theta) - log(r.null.theta[1]);
@@ -148,6 +146,10 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
     y.boot[,i] <- rmultinom(1, size = Y.plus[i], prob)
   }
   
+  #' Adjustment bootsratp sample for RAPTT
+  #' Convert the projected data to mean vector for Hotelling's T2 test
+  x.raptt   <- fnc.adj(x.boot, X.plus)
+  y.raptt   <- fnc.adj(y.boot, Y.plus) 
   
   for(m in 1:m.random){
     RP.orth <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT 
@@ -156,8 +158,8 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
     rx.dir <- RP.prop %*% x.boot
     ry.dir <- RP.prop %*% y.boot
     
-    rx.raptt  <- RP.orth %*% x.boot
-    ry.raptt  <- RP.orth %*% y.boot
+    rx.raptt  <- RP.orth %*% x.raptt
+    ry.raptt  <- RP.orth %*% y.raptt
     
     r.null.theta <- RP.prop %*% theta.null
     r.null.dir   <- log(r.null.theta) - log(r.null.theta[1]);

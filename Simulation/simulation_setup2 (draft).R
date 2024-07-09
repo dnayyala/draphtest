@@ -5,6 +5,8 @@
 ####################################################
 rm(list=ls())
 setwd("/Users/bchoi/NewFolder/draphtest/R")
+
+
 #args <- commandArgs(trailingOnly = TRUE)
 ## args will be a vector of length three containing p n and k
 
@@ -15,15 +17,7 @@ library(doParallel)
 library(doRNG)
 library(gtools)
 library(ICSNP)
-
-source("dm_lkhd.R")
-source("dm_jacobian.R") # Jacobian with constant term (mu)
-source("dm_hessian.R")
-source("dm_nr.R")
-source("random_proj.R")
-source("dm_wald_test.R")
-source("dm_lrt.R")
-source("ortho_randproj.R")
+library(draphtest)
 
 start.time <- Sys.time()
 ## Set values
@@ -65,16 +59,16 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 
-#' fnc.adj <- function(x, X.plus){
-#'   #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
-#' 
-#'   n <- length(X.plus)
-#'   output <- matrix(NA, nrow(x), n)
-#'   for(i in 1:n){
-#'     output[,i] <- x[,i]/X.plus[i]
-#'   }
-#'   return(output)
-#' }
+fnc.adj <- function(x, X.plus){
+  #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
+
+  n <- length(X.plus)
+  output <- matrix(NA, nrow(x), n)
+  for(i in 1:n){
+    output[,i] <- x[,i]/X.plus[i]
+  }
+  return(output)
+}
 
 avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
   x.boot <- matrix(NA, p, n)
@@ -83,15 +77,16 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
     x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
   }
   
+  #' Adjustment bootsratp sample for RAPTT
+  x.raptt   <- fnc.adj(x.boot, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
+
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
     RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
-    rx.raptt <- (RP.orth %*% x.boot)
-    #raw.raptt  <- (RP.orth %*% x.boot)       # project data with random orthogonal projection
-    #rx.raptt   <- fnc.adj(raw.raptt, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
-    
+    rx.raptt <- (RP.orth %*% x.raptt)
+
     r.null.theta   <- c(RP.prop %*% theta.null)
     r.null.dirmult <- log(r.null.theta) - log(r.null.theta[1]);
     r.null.raptt   <- RP.orth %*% theta.null
@@ -129,15 +124,16 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
     x.boot[,i]           <- rmultinom(1, size = X.plus[i], prob)
   }
   
+  #' Adjustment bootsratp sample for RAPTT
+  x.raptt   <- fnc.adj(x.boot, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
+  
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
     RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
-    rx.raptt   <- (RP.orth %*% x.boot)
-    # raw.raptt  <- (RP.orth %*% x.boot)       # project data with random orthogonal projection
-    # rx.raptt   <- fnc.adj(raw.raptt, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
-    
+    rx.raptt   <- (RP.orth %*% x.raptt)
+
     r.null.theta   <- c(RP.prop %*% theta.null)
     r.null.dirmult <- log(r.null.theta) - log(r.null.theta[1]);
     r.null.raptt   <- RP.orth %*% theta.null
