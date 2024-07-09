@@ -16,13 +16,21 @@ dm.wald(
 )
 }
 \arguments{
+\item{x}{A data matrix of size $p \times n$ generated from \link{p}-dimensional Dirichlet-Multinomial distribution.}
+
+\item{y}{A data matrix of size $p \times n$ generated from \link{p}-dimensional Dirichlet-Multinomial distribution.}
+
+\item{mu.x}{A scalar parameter of x which represents the dispersion parameter}
+
+\item{mu.y}{A scalar parameter of y which represents the dispersion parameter}
+
+\item{alpha.null}{Vector of length p which represents the log-transformed mean vector under the null hypothesis.}
+
 \item{alpha.x}{Vector of length p which represents the log-transformed mean vector of x.}
 
 \item{alpha.y}{Vector of length p which represents the log-transformed mean vector of y.}
 
 \item{type}{If \code{type} is  set as \code{one}, the function will return a one sample test result, else if \code{type} is  set as \code{two} then the function will return two samples test result.}
-
-\item{alpha}{Vector of length p which represents the log-transformed mean vector under the null hypothesis.}
 }
 \value{
 the function will return test statistic, p value and the result of the Wald-type test.
