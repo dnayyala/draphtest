@@ -18,7 +18,7 @@ dm.nr(x, mu = NULL, alpha = NULL, tol = 1e-04, maxiters = 100)
 \item{param}{Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".}
 }
 \value{
-the function will return a $p \times 1$ vector containing the estimate of the param alpha and a the estimate of mu
+the function will return a (p x 1) vector containing the estimate of the param alpha and a the estimate of mu
 }
 \description{
 Newton-Rapshon algorithm to estimate parameter alpha (or theta)

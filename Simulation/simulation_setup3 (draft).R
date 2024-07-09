@@ -34,7 +34,7 @@ typ1err  <- 0.05   # Significance level
 # Generate Dirichlet random variables
 set.seed(1234)
 mu.x      <- p
-mu.y      <- p  #as.integer(args[3])
+mu.y      <- sqrt(p)  #as.integer(args[3])
 
 alpha        <- c(0, rgamma(p-1, 3, 5))
 theta.null   <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
@@ -162,8 +162,8 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
 end.time <- Sys.time()
 running.time <- end.time - start.time; running.time
 
-raptt.emp.alpha  <- mean(mean.p[,3] < cut.off[3]); raptt.emp.alpha
-lrt.emp.alpha <- mean(mean.p[,2] < cut.off[2]); lrt.emp.alpha
+raptt.emp.alpha <- mean(mean.p[,3] < cut.off[3]); raptt.emp.alpha
+lrt.emp.alpha   <- mean(mean.p[,2] < cut.off[2]); lrt.emp.alpha
 wald.emp.alpha  <- mean(mean.p[,1] < cut.off[1]); wald.emp.alpha 
 
 emp.alpha <- cbind(wald.emp.alpha, lrt.emp.alpha, raptt.emp.alpha)

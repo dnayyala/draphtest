@@ -1,4 +1,4 @@
-# Simulation Set-Up 1: Simulation for empirical type 1 error of One sample test (Dirichlet distribution)
+# Simulation Setup 1: Simulation for empirical type 1 error of One sample test (Dirichlet distribution)
 
 ####################################################
 ##############         LIBRARY      ################
@@ -7,8 +7,8 @@ rm(list=ls())
 setwd("/Users/bchoi/NewFolder/draphtest/R")
 #setwd("~path")
 
-#args <- commandArgs(trailingOnly = TRUE)
-## args will be a vector of length three containing p n and k
+# args <- commandArgs(trailingOnly = TRUE)
+# args will be a vector of length three containing p, n and k
 
 # R packages
 library(mvtnorm)

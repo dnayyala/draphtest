@@ -7,16 +7,16 @@
 dm.hessian(x, mu, alpha, param = "alpha")
 }
 \arguments{
-\item{x}{The data matrix of size $p \times n$ which is generated from \link{p}-dimensional Dirichlet distribution.}
+\item{x}{The data matrix of size $(p x n)$ which is generated from \link{p}-dimensional Dirichlet distribution.}
 
 \item{mu}{A positive scalar parameter which represents the dispersion parameter of the Dirichlet distribution.}
 
-\item{alpha}{A $p \times 1$ parameter vector which is the log-transformed mean of Dirichlet distribution.}
+\item{alpha}{A $(p x 1)$ parameter vector which is the log-transformed mean of Dirichlet distribution.}
 
 \item{param}{A character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".}
 }
 \value{
-If \code{param} is set as \code{alpha}, the function will return a $(p-1) \times (p-1)$ Hessian matrix, else if \code{param} is set as \code{mu}, the function will return a scalar of Hessian
+If \code{param} is set as \code{alpha}, the function will return a $(p-1) x (p-1)$ Hessian matrix, else if \code{param} is set as \code{mu}, the function will return a scalar of Hessian
 Off-diagonal elements of Hessian Matrix
 Diagonal elements of Hessian Matrix
 }

@@ -16,7 +16,7 @@ dm.jacobian(x, mu, alpha, param = "alpha")
 \item{param}{Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".}
 }
 \value{
-If \code{param} is set as \code{alpha}, the function will return a $(p-1) \times 1$ vector of Jacobian, else if \code{param} is set as \code{mu}, the function will return a scalar of Jacobian.
+If \code{param} is set as \code{alpha}, the function will return a $(p-1) x 1$ vector of Jacobian, else if \code{param} is set as \code{mu}, the function will return a scalar of Jacobian.
 Jacobian in terms of parameter alpha
 Jacobian in terms of parameter mu
 }

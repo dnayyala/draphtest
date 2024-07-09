@@ -65,16 +65,16 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 
-fnc.adj <- function(x, X.plus){
-  #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
-
-  n <- length(X.plus)
-  output <- matrix(NA, nrow(x), n)
-  for(i in 1:n){
-    output[,i] <- x[,i]/X.plus[i]
-  }
-  return(output)
-}
+#' fnc.adj <- function(x, X.plus){
+#'   #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
+#' 
+#'   n <- length(X.plus)
+#'   output <- matrix(NA, nrow(x), n)
+#'   for(i in 1:n){
+#'     output[,i] <- x[,i]/X.plus[i]
+#'   }
+#'   return(output)
+#' }
 
 avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
   x.boot <- matrix(NA, p, n)
@@ -88,8 +88,9 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
     RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
-    raw.raptt  <- (RP.orth %*% x.boot)       # project data with random orthogonal projection
-    rx.raptt   <- fnc.adj(raw.raptt, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
+    rx.raptt <- (RP.orth %*% x.boot)
+    #raw.raptt  <- (RP.orth %*% x.boot)       # project data with random orthogonal projection
+    #rx.raptt   <- fnc.adj(raw.raptt, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
     
     r.null.theta   <- c(RP.prop %*% theta.null)
     r.null.dirmult <- log(r.null.theta) - log(r.null.theta[1]);
@@ -133,8 +134,9 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
     RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
-    raw.raptt  <- (RP.orth %*% x.boot)       # project data with random orthogonal projection
-    rx.raptt   <- fnc.adj(raw.raptt, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
+    rx.raptt   <- (RP.orth %*% x.boot)
+    # raw.raptt  <- (RP.orth %*% x.boot)       # project data with random orthogonal projection
+    # rx.raptt   <- fnc.adj(raw.raptt, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
     
     r.null.theta   <- c(RP.prop %*% theta.null)
     r.null.dirmult <- log(r.null.theta) - log(r.null.theta[1]);
@@ -172,6 +174,7 @@ running.time <- end.time - start.time; running.time
 #WRIET A TABLE
 emp.alpha <- cbind(raptt.emp.alpha, lrt.emp.alpha, wald.emp.alpha)
 colnames(emp.alpha)<- c("RAPTT", "LRT", "WALD")
+
 
 ## WRITE THE SAVE FILE NAME INCLUDING THE VALUES PROVIDED IN ARGS
 ## SOMETHING LIKE "Result_args[1]_args[2]_args[3].RData"

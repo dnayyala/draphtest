@@ -24,7 +24,6 @@ dir.jacobian <- function(x, mu, alpha, param = "alpha"){
   W       <- rowSums(log(x)) - n*digamma(mu*theta) 
   
   if (param == "alpha"){
-    
     jacobian <- -mu*theta[-1] * (Q%*%W)
     
   } else if (param == "mu"){
