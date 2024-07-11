@@ -124,8 +124,8 @@ raptt.emp.alpha  <- mean(mean.p[,3] < cut.off[3]); raptt.emp.alpha
 
 emp.alpha <- cbind(wald.emp.alpha, lrt.emp.alpha, raptt.emp.alpha)
 colnames(emp.alpha) <- c("wald","lrt", "raptt")
-# 
-write.csv(emp.alpha, file=paste0("/Users/bchoi/Google Drive/Projects/Random Project/Final version (042024)/results/Dir_OneSample_alpha_p_",p,"_n_",n,"_k_",k,"_mu_",mu,".csv") )
+
+#write.csv(emp.alpha, file=paste0("/Users/bchoi/Google Drive/Projects/Random Project/Final version (042024)/results/Dir_OneSample_alpha_p_",p,"_n_",n,"_k_",k,"_mu_",mu,".csv") )
 ## WRITE THE SAVE FILE NAME INCLUDING THE VALUES PROVIDED IN ARGS
 ## SOMETHING LIKE "Result_args[1]_args[2]_args[3].RData"
 
