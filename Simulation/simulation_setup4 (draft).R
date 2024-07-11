@@ -46,6 +46,17 @@ for(i in 1:n){
   y[,i]  <- rmultinom(1, size = Y.plus[i], prob)
 }
 
+fnc.adj <- function(x, X.plus){
+  #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
+  
+  n <- length(X.plus)
+  output <- matrix(NA, nrow(x), n)
+  for(i in 1:n){
+    output[,i] <- x[,i]/X.plus[i]
+  }
+  return(output)
+}
+
 start.time <- Sys.time()
 
 ## STAGE 1
