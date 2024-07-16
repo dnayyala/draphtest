@@ -25,7 +25,7 @@ typ1err  <- 0.05   # Significance level
 # Generate Dirichlet-multinomial random variables
 set.seed(1234)
 mu.x      <- p
-mu.y      <- sqrt(p)  #as.integer(args[3])
+mu.y      <- p  #as.integer(args[3])
 
 alpha        <- c(0, rgamma(p-1, 3, 5))
 theta.null   <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
@@ -80,7 +80,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
     x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
   }
 
-  y.boot  <- t(rdirichlet(n, mu.y*theta.null))
+  y.boot  <- matrix(NA, p, n)
   for(i in 1:n){
     prob       <- rdirichlet(1, mu.y*theta.null)
     y.boot[,i] <- rmultinom(1, size = Y.plus[i], prob)
@@ -151,7 +151,7 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
     x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
   }
   
-  y.boot  <- t(rdirichlet(n, mu.y*theta.null))
+  y.boot  <- matrix(NA, p, n)
   for(i in 1:n){
     prob       <- rdirichlet(1, mu.y*theta.null)
     y.boot[,i] <- rmultinom(1, size = Y.plus[i], prob)
