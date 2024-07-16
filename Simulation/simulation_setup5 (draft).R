@@ -5,8 +5,10 @@
 ####################################################
 rm(list=ls())
 setwd("/Users/bchoi/NewFolder/draphtest/R")
+
 #setwd("~path")
 
+#.rs.restartR() # restart R session
 # args <- commandArgs(trailingOnly = TRUE)
 # args will be a vector of length three containing p, n and k
 
@@ -26,7 +28,7 @@ p            <- 100
 n            <- 50 # the number of samples from Dirichlet distribution
 k            <- 10 #as.integer(args[1])
 type1.err    <- 0.05   # Significance level
-diff.rate    <- 0
+diff.rate    <- 0.05
 
 set.seed(1234)
 # Generate a Dirichlet distribution parameters
@@ -38,13 +40,20 @@ theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
 if (diff.rate == 0){
   theta.alt = theta.null
 } else {
-  e    <- min(theta.null[1])/2 - min(theta.null[1])*0.1 # to add a difference between null & alternative
+  e    <- min(theta.null)/2 - min(theta.null)*0.1 # to add a difference between null & alternative
   
   n.equal  <- p*(1-diff.rate) 
-  n.diff   <- (p*diff.rate/2)
+  n.diff.u   <- ceiling((p*diff.rate/2))
+  n.diff.l   <- round(p*diff.rate/2)
   
-  theta.alt = c(theta.null[1:n.equal], theta.null[(n.equal+1) : (n.equal+n.diff)] - e, theta.null[(n.equal+1) : (n.equal+n.diff)] + e)
-}
+  theta.alt1 <- theta.null[1:n.equal]
+  theta.alt2 <- theta.null[(n.equal+1) : (n.equal+n.diff.l)] - e
+  theta.alt3 <- theta.null[(n.equal+n.diff.l+1) : (n.equal+n.diff.l+n.diff.u)] + e
+  
+  theta.alt = c(theta.alt1, theta.alt2, theta.alt3)
+  
+  }
+
 
 
 ## STAGE 1
@@ -131,9 +140,9 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
 end.time <- Sys.time()
 
 running.time <-  end.time - start.time; running.time
-wald.emp.alpha   <- mean(mean.p[,1] < cut.off[1]); wald.emp.alpha
-lrt.emp.alpha    <- mean(mean.p[,2] < cut.off[2]); lrt.emp.alpha
-raptt.emp.alpha  <- mean(mean.p[,3] < cut.off[3]); raptt.emp.alpha
+wald.emp.power   <- mean(mean.p[,1] < cut.off[1]); wald.emp.power
+lrt.emp.power    <- mean(mean.p[,2] < cut.off[2]); lrt.emp.power
+raptt.emp.power  <- mean(mean.p[,3] < cut.off[3]); raptt.emp.power
 
-emp.alpha <- cbind(wald.emp.alpha, lrt.emp.alpha, raptt.emp.alpha)
-colnames(emp.alpha) <- c("wald","lrt", "raptt"); emp.alpha
+emp.power <- cbind(wald.emp.power, lrt.emp.power, raptt.emp.power)
+colnames(emp.power) <- c("wald","lrt", "raptt"); emp.power
