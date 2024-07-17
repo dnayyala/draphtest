@@ -1,7 +1,7 @@
 dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = NULL,  type = "one"){
     #' Wald-type test to parameter alpha
-    #' @param x A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet distribution. 
-    #' @param y A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet distribution. 
+    #' @param x A data matrix of size (p x n) generated from [p]-dimensional Dirichlet distribution. 
+    #' @param y A data matrix of size (p X n) generated from [p]-dimensional Dirichlet distribution. 
     #' @param mu.x A scalar parameter of x which represents the dispersion parameter of the Dirichlet distribution
     #' @param mu.y A scalar parameter of y which represents the dispersion parameter of the Dirichlet distribution
     #' @param alpha Vector of length p which represents the log-transformed mean vector under the null hypothesis.
