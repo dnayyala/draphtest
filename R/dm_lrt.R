@@ -1,10 +1,9 @@
-
 dm.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alpha.null , type = "one"){
     #' Likelihood-ratio test to parameter alpha
-    #' @parm x A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet-Multinomial distribution. 
-    #' @parm y A data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet-Multinomial distribution. 
-    #' @parm mu.x A scalar parameter of x which represents the dispersion parameter.
-    #' @parm mu.y A scalar parameter of y which represents the dispersion parameter.
+    #' @param x A data matrix of size (p x n) generated from [p]-dimensional Dirichlet-Multinomial distribution. 
+    #' @param y A data matrix of size (p x n) generated from [p]-dimensional Dirichlet-Multinomial distribution. 
+    #' @param mu.x A scalar parameter of x which represents the dispersion parameter.
+    #' @param mu.y A scalar parameter of y which represents the dispersion parameter.
     #' @param alpha Vector of length p which represents the log-transformed mean vector under the null hypothesis.
     #' @param alpha.x Vector of length p which represents the log-transformed mean vector of x.  
     #' @param alpha.y Vector of length p which represents the log-transformed mean vector of y. 
