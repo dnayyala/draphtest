@@ -9,7 +9,7 @@ ortho.randproj(nrow, ncol, method = "norm", seed = NULL)
 \arguments{
 \item{nrow}{Number of rows in the random matrix to be generated}
 
-\item{ncol}{Number of colums}
+\item{ncol}{Number of columns}
 
 \item{method}{The method to be used for generating elements in the matrix. If \code{method = "norm"} (Default), elements are generated from standard normal distribution. If \code{method = "achlioptas"}, the elements are selected from the set \eqn{\{-1, 0, 1\}} with probabilities \eqn{\{1/6, 2/3, 1/6\}} respectively.}
 

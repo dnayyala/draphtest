@@ -2,12 +2,12 @@
 % Please edit documentation in R/dir_jacobian.R
 \name{dir.jacobian}
 \alias{dir.jacobian}
-\title{Jacobian of Dirichlet distribution with respect to parameter alpha}
+\title{Jacobian for Dirichlet distribution}
 \usage{
 dir.jacobian(x, mu, alpha, param = "alpha")
 }
 \arguments{
-\item{x}{A matrix size of (p x n) which is generated from \link{p}-dimensional Dirichlet distribution.}
+\item{x}{A matrix size of \eqn{p \times n} which is generated from \eqn{p}-dimensional Dirichlet distribution.}
 
 \item{mu}{Scalar parameter of the Dirichlet distribution which represents the dispersion of the data.}
 
@@ -16,8 +16,8 @@ dir.jacobian(x, mu, alpha, param = "alpha")
 \item{param}{Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".}
 }
 \value{
-a Jacobian, the first-order partial derivatives with respect to param alpha, size of $(p-1)$ vector
+A Jacobian vector containing the first-order partial derivatives with respect to param alpha, of length \eqn{p-1}. For "mu", the function returns a scalar Jacobian.
 }
 \description{
-Jacobian of Dirichlet distribution with respect to parameter alpha
+This function computes the Jacobian of Dirichlet distribution with respect to the two parameters: alpha and mu
 }

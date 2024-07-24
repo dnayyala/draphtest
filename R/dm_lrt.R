@@ -1,13 +1,18 @@
 dm.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alpha.null , type = "one"){
-    #' Likelihood-ratio test to parameter alpha
-    #' @param x A data matrix of size (p x n) generated from [p]-dimensional Dirichlet-Multinomial distribution. 
-    #' @param y A data matrix of size (p x n) generated from [p]-dimensional Dirichlet-Multinomial distribution. 
+    #' @title Likelihood ratio test for Dirichlet multinomial distribution
+    #' 
+    #' @description Likelihood-ratio test to parameter alpha of the Dirichlet-multinomial distribution
+ 
+    #' @param x A data matrix of size \eqn{p \times n} generated from [p]-dimensional Dirichlet-Multinomial distribution. 
+    #' @param y A data matrix of size \eqn{p \times n} generated from [p]-dimensional Dirichlet-Multinomial distribution. 
     #' @param mu.x A scalar parameter of x which represents the dispersion parameter.
     #' @param mu.y A scalar parameter of y which represents the dispersion parameter.
-    #' @param alpha Vector of length p which represents the log-transformed mean vector under the null hypothesis.
+    #' @param alpha.null Vector of length p which represents the log-transformed mean vector under the null hypothesis.
     #' @param alpha.x Vector of length p which represents the log-transformed mean vector of x.  
     #' @param alpha.y Vector of length p which represents the log-transformed mean vector of y. 
     #' @param type If ```type``` is  set as ```one```, the function will return a one sample test result, else if ```type``` is  set as ```two``` then the function will return two samples test result.
+    #' @import stats
+    #' @export
     #' @return the function will return test statistic, p value and the result of the Likelihood-ratio test.
 
     p <- length(alpha.null) # the number of parameters

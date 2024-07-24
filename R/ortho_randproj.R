@@ -1,13 +1,13 @@
 ortho.randproj <- function(nrow, ncol, method = "norm", seed = NULL){
-    #' Orthogonal random matrix generator
+    #' @title Orthogonal random matrix generator
     #'
-    #' Generate random matrices of given dimension which have full row and are orthogonal
+    #' @description Generate random matrices of given dimension which have full row and are orthogonal
     #' @import mvtnorm stats
     NULL
     #' @export
 
     #' @param nrow Number of rows in the random matrix to be generated
-    #' @param ncol Number of colums
+    #' @param ncol Number of columns
     #' @param method The method to be used for generating elements in the matrix. If \code{method = "norm"} (Default), elements are generated from standard normal distribution. If \code{method = "achlioptas"}, the elements are selected from the set \eqn{\{-1, 0, 1\}} with probabilities \eqn{\{1/6, 2/3, 1/6\}} respectively.
     #' @param seed Set the seed to replicate the random matrix generated. Default is \code{NULL} and no seed is used.
     #' @return An orthogonal matrix of with \code{nrow} rows and \code{ncol} columns.

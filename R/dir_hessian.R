@@ -1,12 +1,16 @@
 dir.hessian <- function(x, mu, alpha, param = "alpha"){
-  #' Hessian matrix of Dirichlet distribution with respect to parameter alpha
+  #' @title Hessian for Dirichlet distribution
   #' 
-  #' @param x The data matrix of size $(p x n)$ which is generated from [p]-dimensional Dirichlet distribution. 
-  #' @param mu A positive scalar parameter which represents the dispersion parameter of the Dirichlet distribution.  
-  #' @param alpha A $(p x 1)$ parameter vector which is the log-transformed mean of Dirichlet distribution. 
-  #' @param param A character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
-  #' @return the Hessian matrix of Dirichlet distribution size of $(p-1) x (p-1)$
+  #' @description Hessian matrix of Dirichlet distribution with respect to the parameters of the distribution: alpha and mu
   
+  #' @param x The data matrix of size \eqn{p \times n} which is generated from \eqn{p}-dimensional Dirichlet distribution. 
+  #' @param mu A positive scalar parameter which represents the dispersion parameter of the Dirichlet distribution.  
+  #' @param alpha A \eqn{p \times 1} parameter vector which is the log-transformed mean of Dirichlet distribution. 
+  #' @param param A character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
+  #' @import stats
+  #' @export
+  #' @return the Hessian matrix of Dirichlet distribution size of \eqn{(p-1) \times (p-1)}
+
   p <- nrow(x)   # the number of parameters (theta)
   
   #print(p) 

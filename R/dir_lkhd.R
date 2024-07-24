@@ -1,7 +1,13 @@
 dir.lkhd      <- function(x, mu, alpha) {
-    #' @param x Data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet distribution. 
+    #' @title Dirichlet likelihood function
+    #' 
+    #' @description Function to compute the Dirichlet likelihood function given a vector of observations and parameters of the distribution
+  
+    #' @param x Data matrix of size \eqn{p \times n} generated from \eqn{p}-dimensional Dirichlet distribution. 
     #' @param mu A scalar parameter which represents the dispersion parameter of the Dirichlet distribution. 
-    #' @param alpha A $p - 1 \times 1$ vector which is the mean parameter of Dirichlet distribution. 
+    #' @param alpha A vector of length \eqn{p-1} which is the mean parameter of Dirichlet distribution. 
+    #' @import stats
+    #' @export
     #' @return a log-likelihood function of Dirichlet distribution. 
     
     ## Check if data and parameter have the same dimension

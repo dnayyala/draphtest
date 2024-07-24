@@ -1,11 +1,15 @@
 dir.jacobian <- function(x, mu, alpha, param = "alpha"){
-  #' Jacobian of Dirichlet distribution with respect to parameter alpha
+  #' @title Jacobian for Dirichlet distribution 
   #' 
-  #' @param x A matrix size of (p x n) which is generated from [p]-dimensional Dirichlet distribution. 
+  #' @description This function computes the Jacobian of Dirichlet distribution with respect to the two parameters: alpha and mu
+  #' 
+  #' @param x A matrix size of \eqn{p \times n} which is generated from \eqn{p}-dimensional Dirichlet distribution. 
   #' @param mu Scalar parameter of the Dirichlet distribution which represents the dispersion of the data. 
   #' @param alpha Vector of length p which represents the log-transformed mean vector of Dirichlet distribution. 
   #' @param param Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
-  #' @return a Jacobian, the first-order partial derivatives with respect to param alpha, size of $(p-1)$ vector
+  #' @import stats
+  #' @export
+  #' @return A Jacobian vector containing the first-order partial derivatives with respect to param alpha, of length \eqn{p-1}. For "mu", the function returns a scalar Jacobian.
   
   p  <- nrow(x)   # the number of parameters
   

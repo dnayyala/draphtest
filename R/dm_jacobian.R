@@ -1,10 +1,15 @@
 dm.jacobian <- function(x, mu, alpha, param = "alpha"){
-  #' Jacobian of Dirichlet distribution with respect to parameter alpha
-  #' @param x A matrix size of (p x n) which is generated from [p]-dimensional Dirichlet distribution. 
+  #' @title Jacobian for Dirichlet-multinomial
+  #' 
+  #' @description Jacobian of Dirichlet-multinomial distribution with respect to the two parameters: alpha and mu
+  #' 
+  #' @param x A matrix size of \eqn{p \times n} which is generated from \eqn{p}-dimensional Dirichlet distribution. 
   #' @param mu Scalar parameter of the Dirichlet distribution which represents the dispersion of the data. 
   #' @param alpha Vector of length p which represents the log-transformed mean vector of Dirichlet distribution. 
   #' @param param Character string identifying the parameter for which the Jacobian is being computed. The possible values are "mu" or "alpha".
-  #' @return If ```param``` is set as ```alpha```, the function will return a $(p-1) x 1$ vector of Jacobian, else if ```param``` is set as ```mu```, the function will return a scalar of Jacobian.
+  #' @import stats
+  #' @export
+  #' @return If ```param``` is set as ```alpha```, the function will return a \eqn{(p-1) \times 1} vector of Jacobian, else if ```param``` is set as ```mu```, the function will return a scalar of Jacobian.
   
   n  <- ncol(x)   # sample size of date
   p  <- nrow(x)

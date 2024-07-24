@@ -1,6 +1,6 @@
 Package: draphtest
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.1
+Title: Random-projection based hypothesis tests for parameters of Dirichlet and Dirichlet-multinomial distributions
+Version: 0.1.0
 Authors@R: c(
     person(given = "Deepak Nag", family = "Ayyala", email = "deepaknagayyala@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7251-580X")),
@@ -13,5 +13,5 @@ Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Imports: stats, doParallel, foreach, mvtnorm

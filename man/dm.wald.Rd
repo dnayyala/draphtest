@@ -2,7 +2,7 @@
 % Please edit documentation in R/dm_wald_test.R
 \name{dm.wald}
 \alias{dm.wald}
-\title{Wald-type test to parameter alpha}
+\title{Wald-type test for parameter alpha}
 \usage{
 dm.wald(
   x,
@@ -16,9 +16,9 @@ dm.wald(
 )
 }
 \arguments{
-\item{x}{A data matrix of size $p \times n$ generated from \link{p}-dimensional Dirichlet-Multinomial distribution.}
+\item{x}{A data matrix of size \eqn{p \times n} generated from \link{p}-dimensional Dirichlet-Multinomial distribution.}
 
-\item{y}{A data matrix of size $p \times n$ generated from \link{p}-dimensional Dirichlet-Multinomial distribution.}
+\item{y}{A data matrix of size \eqn{p \times n} generated from \link{p}-dimensional Dirichlet-Multinomial distribution.}
 
 \item{mu.x}{A scalar parameter of x which represents the dispersion parameter}
 
@@ -36,5 +36,5 @@ dm.wald(
 the function will return test statistic, p value and the result of the Wald-type test.
 }
 \description{
-Wald-type test to parameter alpha
+This function computes the Wald-type test statistic for testing equality of parameters of one and two sample Dirichlet-multinomial distribution
 }

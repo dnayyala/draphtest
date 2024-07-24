@@ -1,7 +1,13 @@
 dm.lkhd <- function(x, mu, alpha) {
-    #' @param x Data matrix of size $p \times n$ generated from [p]-dimensional Dirichlet-multinomial  distribution. 
+    #' @title Dirichlet-multinomial likelihood function
+    #' 
+    #' @description Function to compute the Dirichlet-multinomial distribution given a vector (or matrix) of observations and parameters of the distribution.
+
+    #' @param x Data matrix of size $p x n$ generated from \eqn{p}-dimensional Dirichlet-multinomial  distribution. 
     #' @param mu A scalar parameter which represents the dispersion parameter of the distribution. 
-    #' @param alpha A $p - 1 \times 1$ vector which is the mean parameter of the distribution. 
+    #' @param alpha A vector of length \eqn{p - 1} which is the mean parameter of the distribution. 
+    #' @import stats
+    #' @export
     #' @return a scalar which is the log-likelihood of the Dirichlet-multinomial distribution. 
     
     ## Check if data and parameter have the same dimension

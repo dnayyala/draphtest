@@ -2,7 +2,7 @@
 % Please edit documentation in R/dir_wald_test.R
 \name{dir.wald}
 \alias{dir.wald}
-\title{Wald-type test to parameter alpha}
+\title{Wald test statistic for Dirichlet distribution}
 \usage{
 dir.wald(
   x,
@@ -16,6 +16,14 @@ dir.wald(
 )
 }
 \arguments{
+\item{x}{A data matrix of size \eqn{p \times n} generated from \eqn{p}-dimensional Dirichlet distribution.}
+
+\item{y}{A data matrix of size \eqn{p \times n} generated from \eqn{p}-dimensional Dirichlet distribution.}
+
+\item{mu.x}{A scalar parameter of x which represents the dispersion parameter of the Dirichlet distribution}
+
+\item{mu.y}{A scalar parameter of y which represents the dispersion parameter of the Dirichlet distribution}
+
 \item{alpha}{Vector of length p which represents the log-transformed mean vector under the null hypothesis.}
 
 \item{alpha.x}{Vector of length p which represents the log-transformed mean vector of x.}
@@ -28,5 +36,5 @@ dir.wald(
 the function will return test statistic, p value and the result of the Wald-type test.
 }
 \description{
-Wald-type test to parameter alpha
+Wald-type test to parameter alpha of the Dirichlet distribution
 }

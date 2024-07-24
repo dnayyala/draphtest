@@ -2,7 +2,7 @@
 % Please edit documentation in R/dir_lrt.R
 \name{dir.lrt}
 \alias{dir.lrt}
-\title{Likelihood-ratio test to parameter alpha}
+\title{Likelihood ratio test for Dirichlet distribution}
 \usage{
 dir.lrt(
   x,
@@ -16,6 +16,14 @@ dir.lrt(
 )
 }
 \arguments{
+\item{x}{A data matrix of size \eqn{p \times n} generated from \eqn{p}-dimensional Dirichlet distribution.}
+
+\item{y}{A data matrix of size \eqn{p \times n} generated from \eqn{p}-dimensional Dirichlet distribution.}
+
+\item{mu.x}{A scalar parameter of x which represents the dispersion parameter of the Dirichlet distribution}
+
+\item{mu.y}{A scalar parameter of y which represents the dispersion parameter of the Dirichlet distribution}
+
 \item{alpha.x}{Vector of length p which represents the log-transformed mean vector of x.}
 
 \item{alpha.y}{Vector of length p which represents the log-transformed mean vector of y.}
@@ -33,5 +41,5 @@ the function will return a list with two elements
 test statistic of LRT
 }
 \description{
-Likelihood-ratio test to parameter alpha
+Likelihood-ratio test for the parameter alpha of the Dirichlet distribution
 }
