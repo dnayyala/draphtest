@@ -58,9 +58,9 @@ if (diff.rate == 0){
 
 
 ## STAGE 1
-n.boots  <- 1e3
-m.random <- 1e3
-n.total  <- 1e3
+n.boots  <- 1e1
+m.random <- 1e1
+n.total  <- 1e1
 
 n.cores <- detectCores()*0.75
 registerDoParallel(cores=n.cores)
@@ -71,12 +71,12 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dopar%  {
   x.boot  <- t(rdirichlet(n, mu*theta.null))
   
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(nrow = k, ncol = p) # The proposed random projection method for Wald and LRT
     
     rx.dir    <- RP.prop %*% x.boot
     rx.raptt  <- RP.orth %*% x.boot
@@ -107,14 +107,14 @@ cut.off <- apply(avg.p.value, 2, func.cutoff)
 p.value <- numeric(m.random)
 mean.p  <- numeric(n.total)
 
-mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   
   x.boot  <- t(rdirichlet(n, mu*theta.alt)) # the Bootstrap sample under the alternative hypothesis
   
   for(m in 1:m.random){
     
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(nrow = k, ncol = p) # The proposed random projection method for Wald and LRT
     
     rx.dir    <- RP.prop %*% x.boot
     rx.raptt  <- RP.orth %*% x.boot

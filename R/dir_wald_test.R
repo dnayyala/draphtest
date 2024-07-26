@@ -38,7 +38,7 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
       stop("Data and parameter dimensions do not match.")
   }
   
-      fisher   <- -dir.hessian(x, mu, alpha.x, param = "alpha")/n  # Fisher information matrix of data x
+      fisher   <- -dir.hessian(x, mu.x, alpha.x, param = "alpha")/n  # Fisher information matrix of data x
       est.cov  <- solve(fisher)
       diff     <-  as.matrix(alpha.x[2:p] - alpha[2:p]) 
     
