@@ -58,9 +58,9 @@ if (diff.rate == 0){
 
 
 ## STAGE 1
-n.boots  <- 1e1
-m.random <- 1e1
-n.total  <- 1e1
+n.boots  <- 1e3
+m.random <- 1e3
+n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
 registerDoParallel(cores=n.cores)
@@ -71,7 +71,7 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dopar%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   x.boot  <- t(rdirichlet(n, mu*theta.null))
   
   for(m in 1:m.random){
