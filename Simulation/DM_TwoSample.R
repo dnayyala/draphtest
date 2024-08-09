@@ -5,15 +5,7 @@
 ####################################################
 rm(list=ls())
 #setwd("~path")
-
 args <- commandArgs(trailingOnly = TRUE)
-# args will be a vector of length three containing p, n, k, mu, and diff.rate
-# p            <- as.integer(args[1])
-# n            <- as.integer(args[2])
-# k            <- as.integer(args[3])
-# mu.x         <- as.integer(args[4])
-# mu.y         <- as.integer(args[5])
-# diff.rate    <- as.integer(args[6])
 
 # R packages
 library(mvtnorm)
@@ -25,6 +17,7 @@ library(ICSNP)
 library(draphtest)
 
 ## Set values
+## args will be a vector of length three containing p, n, k, mu, and diff.rate
 p            <- as.integer(args[1])
 n            <- as.integer(args[2])
 k            <- as.integer(args[3])
@@ -37,28 +30,20 @@ type1err     <- 0.05   # Significance level
 set.seed(1234)
 ## Generate Dirichlet-multinomial random variables
 # Generate parameters
-alpha        <- c(0, rgamma(p-1, 3, 5))
-theta.null   <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
-
+alpha      <- c(0, rgamma(p-1, 3, 5))
+theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
+theta.x    <- theta.null
 
 # Generate parameters (theta) in sample Y 
+# Generate parameter vector of theta in sample Y 
 if (diff.rate == 0){
   theta.y = theta.null
 } else {
-  e    <- min(theta.null)/2 - min(theta.null)*0.1 # to give a difference between null & alternative
-  
-  n.equal  <- p*(1-diff.rate) 
-  n.diff.u   <- ceiling((p*diff.rate/2))
-  n.diff.l   <- round(p*diff.rate/2)
-  
-  theta.alt1 <- theta.null[1:n.equal]
-  theta.alt2 <- theta.null[(n.equal+1) : (n.equal+n.diff.l)] - e
-  theta.alt3 <- theta.null[(n.equal+n.diff.l+1) : (n.equal+n.diff.l+n.diff.u)] + e
-  
-  theta.y = c(theta.alt1, theta.alt2, theta.alt3)
+  e       <-  min(alpha[-1])  # to give a difference between null & alternative
+  n.equal <- p*(1-diff.rate) 
+  alpha.y <- alpha + e*(1:p >= n.equal)
+  theta.y <- exp(alpha.y - max(alpha.y))/sum(exp(alpha.y - max(alpha.y)))
 }
-
-theta.x <- theta.null
 
 
 lambda <- 1e4  # empirical type 1 error (alpha) is related to the lambda value
@@ -104,7 +89,7 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 avg.p.value  <- numeric(m.random)
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
   
   #' Generate the bootstrap samples under the null hypothesis 
   x.boot <- matrix(NA, p, n)
@@ -175,7 +160,7 @@ p.value.wald  <- numeric(m.random)
 p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
-mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
+mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
   #' Generate the bootstrap samples under the alternative hypothesis
   #' 
   x.boot <- matrix(NA, p, n)
