@@ -6,12 +6,6 @@
 rm(list=ls())
 #setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
-# args will be a vector of length three containing p, n, k, mu, and diff.rate
-# p            <- as.integer(args[1])
-# n            <- as.integer(args[2])
-# k            <- as.integer(args[3])
-# mu           <- as.integer(args[4])
-# diff.rate    <- as.integer(args[5])
 
 # R packages
 library(mvtnorm)
@@ -25,6 +19,7 @@ library(draphtest)
 
 start.time <- Sys.time()
 ## Set values
+## args will be a vector of length three containing p, n, k, mu, and diff.rate
 p            <- as.integer(args[1])
 n            <- as.integer(args[2])
 k            <- as.integer(args[3])
@@ -42,20 +37,11 @@ theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
 if (diff.rate == 0){
   theta.alt = theta.null
 } else {
-  e    <- min(theta.null)/2 - min(theta.null)*0.1 # to add a difference between null & alternative
-  
-  n.equal  <- p*(1-diff.rate) 
-  n.diff.u   <- ceiling((p*diff.rate/2))
-  n.diff.l   <- round(p*diff.rate/2)
-  
-  theta.alt1 <- theta.null[1:n.equal]
-  theta.alt2 <- theta.null[(n.equal+1) : (n.equal+n.diff.l)] - e
-  theta.alt3 <- theta.null[(n.equal+n.diff.l+1) : (n.equal+n.diff.l+n.diff.u)] + e
-  
-  theta.alt = c(theta.alt1, theta.alt2, theta.alt3)
+  e         <- min(alpha[-1]) # to add a difference between null & alternative
+  n.equal   <- p*(1-diff.rate) 
+  alpha.alt <- alpha + e*(1:p >= n.equal)
+  theta.alt <- exp(alpha.alt - max(alpha.alt))/sum(exp(alpha.alt - max(alpha.alt)))
   }
-
-
 
 ## STAGE 1
 n.boots  <- 1e3
@@ -71,12 +57,12 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
   x.boot  <- t(rdirichlet(n, mu*theta.null))
   
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(nrow = k, ncol = p) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
     
     rx.dir    <- RP.prop %*% x.boot
     rx.raptt  <- RP.orth %*% x.boot
@@ -107,14 +93,14 @@ cut.off <- apply(avg.p.value, 2, func.cutoff)
 p.value <- numeric(m.random)
 mean.p  <- numeric(n.total)
 
-mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
+mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
   
   x.boot  <- t(rdirichlet(n, mu*theta.alt)) # the Bootstrap sample under the alternative hypothesis
   
   for(m in 1:m.random){
     
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(nrow = k, ncol = p) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
     
     rx.dir    <- RP.prop %*% x.boot
     rx.raptt  <- RP.orth %*% x.boot
