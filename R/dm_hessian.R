@@ -14,6 +14,8 @@ dm.hessian <- function(x, mu, alpha, param = "alpha"){
   p <- nrow(x)   # the number of parameters (theta)
   n <- ncol(x)   # sample size of x
   
+  X.plus <- colSums(x)
+  
   ## Check if data and parameter dimensions match
   if (length(alpha) != p){
     stop("Data and parameter dimensions do not match.")
