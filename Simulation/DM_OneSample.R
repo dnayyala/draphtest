@@ -89,7 +89,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
 
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(k, p) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
     rx.raptt <- (RP.orth %*% x.raptt)
@@ -136,7 +136,7 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .comb
   
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(k, p) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
     rx.raptt   <- (RP.orth %*% x.raptt)
