@@ -93,7 +93,7 @@ fnc.adj <- function(x, X.plus){
   return(output)
 }
 
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   x.boot <- matrix(NA, p, n)
   for(i in 1:n){
     prob       <- rdirichlet(1, mu*theta.null)
@@ -105,7 +105,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
 
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(k, p) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
     rx.raptt <- (RP.orth %*% x.raptt)
@@ -139,7 +139,7 @@ cut.off <- apply(avg.p.value, 2, func.cutoff)
 p.value <- numeric(m.random)
 mean.p <- numeric(n.total)
 
-mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   
   x.boot <- matrix(NA, p, n)
   for(i in 1:n){
@@ -152,7 +152,7 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
   
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
-    RP.prop   <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop   <- random.proj(k, p) # The proposed random projection method for Wald and LRT
     
     rx.dirmult <- RP.prop %*% x.boot
     rx.raptt   <- (RP.orth %*% x.raptt)
