@@ -89,7 +89,7 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 avg.p.value  <- numeric(m.random)
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   
   #' Generate the bootstrap samples under the null hypothesis 
   x.boot <- matrix(NA, p, n)
@@ -112,7 +112,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP'), .combine='rbi
   
   for(m in 1:m.random){
     RP.orth <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT 
-    RP.prop <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop <- random.proj(k, p) # The proposed random projection method for Wald and LRT
     
     rx.dir <- RP.prop %*% x.boot
     ry.dir <- RP.prop %*% y.boot
@@ -160,7 +160,7 @@ p.value.wald  <- numeric(m.random)
 p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
-mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   #' Generate the bootstrap samples under the alternative hypothesis
   #' 
   x.boot <- matrix(NA, p, n)
@@ -182,7 +182,7 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
   
   for(m in 1:m.random){
     RP.orth <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT 
-    RP.prop <- random.proj(p, k) # The proposed random projection method for Wald and LRT
+    RP.prop <- random.proj(k, p) # The proposed random projection method for Wald and LRT
     
     rx.dir <- RP.prop %*% x.boot
     ry.dir <- RP.prop %*% y.boot
