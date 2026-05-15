@@ -20,34 +20,27 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
  
   
   if (is.null(mu.y)){
-      type == "one"
+      type <- "one"
   } else {
-      type == "two"
+      type <- "two"
   }
-  
-  
-  if (is.null(alpha)){
-      type == "two"
-  } else {
-      type == "one"
-  }
+
   
   if (type == "one"){
   ## Check if data and parameter dimensions match
-  if (length(alpha.x) && length(alpha) != p){
+  if (length(alpha.x) != p || length(alpha) != p){
       stop("Data and parameter dimensions do not match.")
   }
-  
+
       fisher   <- -dir.hessian(x, mu.x, alpha.x, param = "alpha")/n  # Fisher information matrix of data x
-      est.cov  <- solve(fisher)
       diff     <-  as.matrix(alpha.x[2:p] - alpha[2:p]) 
     
-      test.stat   <- t(diff) %*% solve(est.cov) %*% diff
+      test.stat   <- t(diff) %*% fisher  %*% diff
       p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
       
     } else if (type == "two"){
-
-    if (length(alpha.x) && length(alpha.y) != p){
+  
+      if (length(alpha.x) != p || length(alpha.y) != p){
         stop("Data and parameter dimensions do not match.")
     }
         
@@ -58,12 +51,12 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
       fisher.x      <- - dir.hessian(x, mu.x, alpha.x, param = "alpha")/n # Fisher information matrix of data x
       fisher.y      <- - dir.hessian(y, mu.y, alpha.y, param = "alpha")/m # Fisher information matrix of data x
       
-      est.cov.x     <-  solve(fisher.x)
-      est.cov.y     <-  solve(fisher.y)
+      # est.cov.x     <-  solve(fisher.x)
+      # est.cov.y     <-  solve(fisher.y)
     
       diff        <-  as.matrix(alpha.x[2:p] - alpha.y[2:p]) 
       
-      test.stat   <-   t(diff) %*% solve(est.cov.x + est.cov.y) %*% diff
+      test.stat   <-   t(diff) %*% solve(fisher.x + fisher.y) %*% diff
       p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
     }  
   result <- NULL;
