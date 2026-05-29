@@ -89,13 +89,15 @@ n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
 registerDoParallel(cores=n.cores)
+registerDoRNG(seed = 1234)
 
 # STEP 1
 p.value.wald  <- numeric(m.random)
 p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
+avg.p.value   <- numeric(m.random)
 
-avg.p.value  <- numeric(m.random)
+
 avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'),
                       .combine='rbind') %dorng% {
   
