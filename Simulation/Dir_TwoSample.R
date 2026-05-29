@@ -118,13 +118,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
     
 }
 
-
-func.cutoff <- function(x){
-    quantile(x, type1err)
-}
-
-cut.off <- apply(avg.p.value, 2, func.cutoff)
-
+cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
 
 # STEP 2
 p.value.wald  <- numeric(m.random)
