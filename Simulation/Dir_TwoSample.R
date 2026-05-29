@@ -8,9 +8,9 @@
 #   STEP 2: Compute empirical type I error (diff.rate = 0) or power (diff.rate > 0)
 #
 # Arguments (via commandArgs)
-#   args[1]: p             - dimension of original 
+#   args[1]: p             - dimension of original data before projection (p >> k)
 #   args[2]: n             - sample size
-#   args[3]: k             - projection dimension
+#   args[3]: k             - projection dimension (K < n)
 #   args[4]: mu.x          - dispersion parameter for group X 
 #   args[5]: mu.y          - dispersion parameter for group Y
 #   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
@@ -19,7 +19,6 @@
 rm(list=ls())
 #setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
-
 
 # Load R packages
 library(mvtnorm)
