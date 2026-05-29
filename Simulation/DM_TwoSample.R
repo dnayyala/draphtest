@@ -1,8 +1,20 @@
-## Simulation for empirical type I error & power of two-sample test (Dirichlet-multinomial distribution)
 
-####################################################
-##############         LIBRARY      ################
-####################################################
+# --------------------------------------------------------------------------------------------------
+# Simulation for empirical type I error & power of two-sample test 
+#
+# Distribution: Dirichlet-multinomial distribution
+# Description: 
+#   STEP 1: Generate empirical null distribution and compute cut-off values
+#   STEP 2: Compute empirical type I error (diff.rate = 0) or power (diff.rate > 0)
+#
+# Arguments (via commandArgs)
+#   args[1]: p             - dimension of original data before projection (p >> k)
+#   args[2]: n             - sample size
+#   args[3]: k             - projection dimension (K < n)
+#   args[4]: mu.x          - dispersion parameter for group X
+#   args[5]: mu.y          - dispersion parameter for group Y
+#   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
+# --------------------------------------------------------------------------------------------------
 rm(list=ls())
 #setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
@@ -62,15 +74,10 @@ for(i in 1:n){
   y[,i]  <- rmultinom(1, size = Y.plus[i], prob)
 }
 
-fnc.adj <- function(x, X.plus){
-  #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
-  
-  n <- length(X.plus)
-  output <- matrix(NA, nrow(x), n)
-  for(i in 1:n){
-    output[,i] <- x[,i]/X.plus[i]
-  }
-  return(output)
+count_to_prop <- function(x, X.plus){
+  # Convert count matrix to proportion matrix
+  # by dividing each columns by its corresponding total counts
+  sweep(x, 2, X.plus, "/")
 }
 
 start.time <- Sys.time()
@@ -89,25 +96,26 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 avg.p.value  <- numeric(m.random)
-avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
+avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'),
+                      .combine='rbind') %dorng% {
   
-  #' Generate the bootstrap samples under the null hypothesis 
+  # Generate the bootstrap samples under the null hypothesis 
   x.boot <- matrix(NA, p, n)
-  for(i in 1:n){
+  for(j in 1:n){
     prob       <- rdirichlet(1, mu.x*theta.null)
-    x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
+    x.boot[,j] <- rmultinom(1, size = X.plus[j], prob)
   }
 
   y.boot  <- matrix(NA, p, n)
-  for(i in 1:n){
+  for(j in 1:n){
     prob       <- rdirichlet(1, mu.y*theta.null)
-    y.boot[,i] <- rmultinom(1, size = Y.plus[i], prob)
+    y.boot[,j] <- rmultinom(1, size = Y.plus[j], prob)
   }
   
-  #' Adjustment bootsratp sample for RAPTT
-  #' Convert the projected data to mean vector for Hotelling's T2 test
-  x.raptt   <- fnc.adj(x.boot, X.plus)
-  y.raptt   <- fnc.adj(y.boot, Y.plus) 
+  # Adjustment bootsratp sample for RAPTT
+  # Convert the projected data to mean vector for Hotelling's T2 test
+  x.raptt   <- count_to_prop(x.boot, X.plus)
+  y.raptt   <- count_to_prop(y.boot, Y.plus) 
   
   
   for(m in 1:m.random){
@@ -133,8 +141,9 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
     alpha.y.est.dir <- unlist(parm.y.est$alpha)
     r.mu.y <- parm.y.est$mu
     
-    r.total <- cbind(rx.dir, ry.dir); 
-    alpha.est.dir  <- unlist(dm.nr(r.total)$alpha)
+    # Estimate common theta parameter 
+    fit.common    <- dm.nr(x = rx.dir, y = ry.dir)
+    alpha.est.dir <- unlist(fit.common$alpha)
     
     p.value.wald[m] <- dm.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                 alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
@@ -147,38 +156,31 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
   
 }
 
-func.cutoff <- function(x){
-  quantile(x, type1err)
-}
-
-cut.off <- apply(avg.p.value, 2, func.cutoff)
-
+cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
 
 # STEP 2
-#emp.alpha <- numeric(length(mu.Y))
 p.value.wald  <- numeric(m.random)
 p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
-  #' Generate the bootstrap samples under the alternative hypothesis
-  #' 
+  # Generate the bootstrap samples under the alternative hypothesis
   x.boot <- matrix(NA, p, n)
-  for(i in 1:n){
+  for(j in 1:n){
     prob       <- rdirichlet(1, mu.x*theta.x)
-    x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
+    x.boot[,j] <- rmultinom(1, size = X.plus[j], prob)
   }
   
   y.boot  <- matrix(NA, p, n)
-  for(i in 1:n){
+  for(j in 1:n){
     prob       <- rdirichlet(1, mu.y*theta.y)
-    y.boot[,i] <- rmultinom(1, size = Y.plus[i], prob)
+    y.boot[,j] <- rmultinom(1, size = Y.plus[j], prob)
   }
   
-  #' Adjustment bootsratp sample for RAPTT
-  #' Convert the projected data to mean vector for Hotelling's T2 test
-  x.raptt   <- fnc.adj(x.boot, X.plus)
-  y.raptt   <- fnc.adj(y.boot, Y.plus) 
+  # Adjustment bootsratp sample for RAPTT
+  # Convert the projected data to mean vector for Hotelling's T2 test
+  x.raptt   <- count_to_prop(x.boot, X.plus)
+  y.raptt   <- count_to_prop(y.boot, Y.plus) 
   
   for(m in 1:m.random){
     RP.orth <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT 
@@ -203,8 +205,9 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .comb
     alpha.y.est.dir <- unlist(parm.y.est$alpha)
     r.mu.y <- parm.y.est$mu
     
-    r.total <- cbind(rx.dir, ry.dir); 
-    alpha.est.dir  <- unlist(dm.nr(r.total)$alpha)
+    # Estimate common theta parameter 
+    fit.common    <- dm.nr(x = rx.dir, y = ry.dir)
+    alpha.est.dir <- unlist(fit.common$alpha)
     
     p.value.wald[m] <- dm.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                 alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
@@ -227,5 +230,9 @@ emp.result <- cbind(wald.emp.result, lrt.emp.result, raptt.emp.result)
 colnames(emp.result) <- c("Wald","LRT", "RAPTT"); emp.result
 
 ## Save the above table as csv file
-write.csv(emp.result, file=paste0("DM_TwoSample_result_p_", args[1], "_n_",  args[2], "_k_",  args[3], 
-                                  "_mu.x_", args[4], "_mu.y_", args[5], "_DiffRate_", args[6], ".csv"))
+write.csv(emp.result, file=paste0("DM_TwoSample_result_p_", args[1], 
+                                  "_n_",                    args[2], 
+                                  "_k_",                    args[3], 
+                                  "_mu.x_",                 args[4], 
+                                  "_mu.y_",                 args[5], 
+                                  "_DiffRate_",             args[6], ".csv"))
