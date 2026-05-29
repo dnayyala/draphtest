@@ -1,8 +1,20 @@
-## Simulation for empirical type 1 error & power of One sample test in Dirichlet distribution
 
-####################################################
-##############         LIBRARY      ################
-####################################################
+# --------------------------------------------------------------------------------------------------
+# Simulation for empirical type I error & power of one-sample test 
+#
+# Distribution: Dirichlet distribution
+# Description: 
+#   STEP 1: Generate empirical null distribution and compute cut-off values
+#   STEP 2: Compute empirical type I error (diff.rate = 0) or power (diff.rate > 0)
+#
+# Arguments (via commandArgs)
+#   args[1]: p             - dimension of original data before projection (p >> k)
+#   args[2]: n             - sample size
+#   args[3]: k             - projection dimension (K < n)
+#   args[4]: mu            - dispersion parameter
+#   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
+# --------------------------------------------------------------------------------------------------
+
 rm(list=ls())
 #setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
@@ -67,8 +79,8 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
     rx.dir    <- RP.prop %*% x.boot
     rx.raptt  <- RP.orth %*% x.boot
     
-    r.null.theta <- RP.prop %*% theta.null
-    r.null.dir   <- log(r.null.theta) - log(r.null.theta[1]);
+    r.null.theta  <- RP.prop %*% theta.null
+    r.null.dir    <- log(r.null.theta) - log(r.null.theta[1]);
     r.null.raptt  <- RP.orth %*% theta.null
     
     ## estimate parameter with the projected data
@@ -83,11 +95,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
   c(mean(p.value.wald), mean(p.value.lrt), mean(p.value.raptt))
 }
 
-func.cutoff <- function(x){
-  quantile(x, type1err)
-}
-
-cut.off <- apply(avg.p.value, 2, func.cutoff)
+cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
 
 # STEP 2
 p.value <- numeric(m.random)
@@ -136,4 +144,8 @@ emp.result <- cbind(wald.emp.result, lrt.emp.result, raptt.emp.result)
 colnames(emp.result) <- c("Wald","LRT", "RAPTT"); emp.result
 
 ## Save the above table as csv file
-write.csv(emp.result, file=paste0("Dir_OneSample_result_p_", args[1], "_n_",  args[2], "_k_",  args[3], "_mu_", args[4],"_DiffRate_", args[5], ".csv"))
+write.csv(emp.result, file=paste0("Dir_OneSample_result_p_", args[1], 
+                                  "_n_",                     args[2], 
+                                  "_k_",                     args[3], 
+                                  "_mu_",                    args[4],
+                                  "_DiffRate_",              args[5], ".csv"))
