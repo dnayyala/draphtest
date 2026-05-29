@@ -1,13 +1,27 @@
-## Simulation for empirical type I error & power of two-sample test (Dirichlet distribution)
 
-####################################################
-##############         LIBRARY      ################
-####################################################
+# --------------------------------------------------------------------------------------------------
+# Simulation for empirical type I error & power of two-sample test 
+#
+# Distribution: Dirichlet distribution
+# Description: 
+#   STEP 1: Generate empirical null distribution and compute cut-off values
+#   STEP 2: Compute empirical type I error (diff.rate = 0) or power (diff.rate > 0)
+#
+# Arguments (via commandArgs)
+#   args[1]: p             - dimension of original 
+#   args[2]: n             - sample size
+#   args[3]: k             - projection dimension
+#   args[4]: mu.x          - dispersion parameter for group X 
+#   args[5]: mu.y          - dispersion parameter for group Y
+#   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
+# --------------------------------------------------------------------------------------------------
+
 rm(list=ls())
 #setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
 
-# R packages
+
+# Load R packages
 library(mvtnorm)
 library(foreach)
 library(doParallel)
@@ -23,7 +37,7 @@ n            <- as.integer(args[2])
 k            <- as.integer(args[3])
 mu.x         <- as.integer(args[4])
 mu.y         <- as.integer(args[5])
-diff.rate    <- as.integer(args[6])
+diff.rate    <- as.numeric(args[6])
 type1err     <- 0.05   # Significance level
 
 # Generate Dirichlet random variables
@@ -80,17 +94,19 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
         r.null.dir   <- log(r.null.theta) - log(r.null.theta[1]);
         r.null.raptt <- RP.orth %*% theta.null
         
-        #' Estimates parameters      
-        parm.x.est  <- dir.nr(rx.dir)
+        # Estimates parameters      
+        parm.x.est      <- dir.nr(rx.dir)
         alpha.x.est.dir <- unlist(parm.x.est$alpha)
-        r.mu.x <- parm.x.est$mu
+        r.mu.x          <- parm.x.est$mu
         
-        parm.y.est  <- dir.nr(ry.dir)
+        parm.y.est      <- dir.nr(ry.dir)
         alpha.y.est.dir <- unlist(parm.y.est$alpha)
-        r.mu.y <- parm.y.est$mu
+        r.mu.y          <- parm.y.est$mu
         
-        r.total <- cbind(rx.dir, ry.dir); 
-        alpha.est.dir  <- unlist(dir.nr(r.total)$alpha)
+        # Estimate common theta parameter 
+        fit.common    <- dir.nr(x = rx.dir, y = ry.dir)
+        alpha.est.dir <- unlist(fit.common$alpha)
+        
         
         p.value.wald[m] <- dir.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                         alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
@@ -169,5 +185,9 @@ emp.result <- cbind(wald.emp.result, lrt.emp.result, raptt.emp.result)
 colnames(emp.result) <- c("Wald","LRT", "RAPTT"); emp.result
 
 ## Save the above table as csv file
-write.csv(emp.result, file=paste0("Dir_TwoSample_result_p_", args[1], "_n_",  args[2], "_k_",  args[3], 
-                                  "_mu.x_", args[4], "_mu.y_", args[5], "_DiffRate_", args[6], ".csv"))
+write.csv(emp.result, file=paste0("Dir_TwoSample_result_p_", args[1], 
+                                  "_n_",                     args[2], 
+                                  "_k_",                     args[3], 
+                                  "_mu.x_",                  args[4], 
+                                  "_mu.y_",                  args[5], 
+                                  "_DiffRate_",              args[6], ".csv"))
