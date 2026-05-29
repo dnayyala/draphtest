@@ -71,6 +71,7 @@ n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
 registerDoParallel(cores=n.cores)
+registerDoRNG(seed = 1234)
 
 # STEP 1
 p.value.wald  <- numeric(m.random)
