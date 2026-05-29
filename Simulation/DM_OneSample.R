@@ -1,8 +1,20 @@
-## Simulation for empirical type I error & power of One sample test (Dirichlet-Multinomial distribution)
 
-####################################################
-##############         LIBRARY      ################
-####################################################
+# --------------------------------------------------------------------------------------------------
+# Simulation for empirical type I error & power of one-sample test 
+#
+# Distribution: Dirichlet-multinomial distribution
+# Description: 
+#   STEP 1: Generate empirical null distribution and compute cut-off values
+#   STEP 2: Compute empirical type I error (diff.rate = 0) or power (diff.rate > 0)
+#
+# Arguments (via commandArgs)
+#   args[1]: p             - dimension of original data before projection (p >> k)
+#   args[2]: n             - sample size
+#   args[3]: k             - projection dimension (K < n)
+#   args[4]: mu            - dispersion parameter
+#   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
+# --------------------------------------------------------------------------------------------------
+
 rm(list=ls())
 #setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
@@ -20,10 +32,10 @@ start.time <- Sys.time()
 ## Set values
 ## args will be a vector of length three containing p, n, k, mu, and diff.rate
 p          <- as.integer(args[1])
-n          <- as.integer(args[2]) # sample size
+n          <- as.integer(args[2]) 
 k          <- as.integer(args[3])
 mu         <- as.integer(args[4])
-diff.rate  <- as.integer(args[5]) # the difference rate between null parameter and alternative 
+diff.rate  <- as.integer(args[5]) 
 type1err   <- 0.05 
 
 # Generate Dirichlet random variables
@@ -44,7 +56,7 @@ if (diff.rate == 0){
 
 # Generate Dirichlet-multinomial distribution random variables
 lambda <- 1e4  # empirical type 1 error (alpha) is related to the lambda value
-x <- matrix(NA, p, n)
+x      <- matrix(NA, p, n)
 
 X.plus <- rpois(n, lambda) # X+ in the manuscript
 for(i in 1:n){
@@ -66,26 +78,20 @@ p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
 
 
-fnc.adj <- function(x, X.plus){
-  #' The adjusted function is to conduct a Hotelling's T2 test (Mean vector testing)
-
-  n <- length(X.plus)
-  output <- matrix(NA, nrow(x), n)
-  for(i in 1:n){
-    output[,i] <- x[,i]/X.plus[i]
-  }
-  return(output)
+count_to_prop <- function(x, X.plus){
+  # Convert count matrix to proportion matrix
+  # by dividing each columns by its corresponding total counts
+  sweep(x, 2, X.plus, "/")
 }
 
 avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   x.boot <- matrix(NA, p, n)
-  for(i in 1:n){
+  for(j in 1:n){
     prob       <- rdirichlet(1, mu*theta.null)
-    x.boot[,i] <- rmultinom(1, size = X.plus[i], prob)
+    x.boot[,j] <- rmultinom(1, size = X.plus[j], prob)
   }
-  
-  #' Adjustment bootsratp sample for RAPTT
-  x.raptt   <- fnc.adj(x.boot, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
+ 
+  x.raptt   <- count_to_prop(x.boot, X.plus) 
 
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
@@ -110,29 +116,22 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
   c(mean(p.value.wald), mean(p.value.lrt), mean(p.value.raptt))
 }
 
-
-## avg.p.value is a matrix of size n.boots x 3
-
-func.cutoff <- function(x){
-  quantile(x, type1err)
-}
-cut.off <- apply(avg.p.value, 2, func.cutoff)
+cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
 
 # STEP 2
-#emp.alpha <- numeric(length(mu.Y))
 p.value <- numeric(m.random)
-mean.p <- numeric(n.total)
+mean.p  <- numeric(n.total)
 
 mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   
   x.boot <- matrix(NA, p, n)
-  for(i in 1:n){
+  for(j in 1:n){
     prob <- rdirichlet(1, mu*theta.alt)
-    x.boot[,i]           <- rmultinom(1, size = X.plus[i], prob)
+    x.boot[,j]           <- rmultinom(1, size = X.plus[j], prob)
   }
   
   #' Adjustment bootsratp sample for RAPTT
-  x.raptt   <- fnc.adj(x.boot, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
+  x.raptt   <- count_to_prop(x.boot, X.plus) # convert the projected data to mean vector for Hotelling's T2 test
   
   for(m in 1:m.random){
     RP.orth   <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT
@@ -169,4 +168,8 @@ emp.result <- cbind(wald.emp.result, lrt.emp.result, raptt.emp.result)
 colnames(emp.result) <- c("Wald","LRT", "RAPTT"); emp.result
 
 ## Save the above table as csv file
-write.csv(emp.result, file=paste0("DM_OneSample_result_p_", args[1], "_n_",  args[2], "_k_",  args[3], "_mu_", args[4],"_DiffRate_", args[5], ".csv"))
+write.csv(emp.result, file=paste0("DM_OneSample_result_p_", args[1], 
+                                  "_n_",                    args[2], 
+                                  "_k_",                    args[3], 
+                                  "_mu_",                   args[4],
+                                  "_DiffRate_",             args[5], ".csv"))
