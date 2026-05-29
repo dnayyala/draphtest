@@ -12,7 +12,7 @@
 #   args[2]: n             - sample size
 #   args[3]: k             - projection dimension (K < n)
 #   args[4]: mu            - dispersion parameter
-#   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
+#   args[5]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
 # --------------------------------------------------------------------------------------------------
 
 rm(list=ls())
@@ -62,6 +62,7 @@ n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
 registerDoParallel(cores=n.cores)
+registerDoRNG(seed = 1234)
 
 # STEP 1
 p.value.wald  <- numeric(m.random)
