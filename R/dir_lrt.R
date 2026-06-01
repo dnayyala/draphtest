@@ -20,12 +20,12 @@ dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alp
     #' }
     
   p <- length(alpha) # the number of parameters
-    
-    if (is.null(mu.y)){
-        type = "one"
-    } else {
-        type = "two"
-    }
+  
+  if (is.null(mu.y)){
+    type <- "one"
+  } else {
+    type <- "two"
+  }
 
     if (type == "one"){
         ## Check if data and parameter dimensions match
