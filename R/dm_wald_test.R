@@ -28,12 +28,12 @@ dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y
   
   if (type == "one"){
     ## Check if data and parameter dimensions match
-    if (length(alpha.x) && length(alpha.null) != p){
+    if (length(alpha.x) != p || length(alpha.null) != p){
       stop("Data and parameter dimensions do not match.")
     }
     
     Hessian_a   <-  dm.hessian(x, mu.x, alpha.x, param = "alpha")  
-    diff        <-  as.matrix(alpha.x[2:p] - alpha[2:p])
+    diff        <-  as.matrix(alpha.x[2:p] - alpha.null[2:p])
     
     test.stat   <- (t(diff) %*%  -Hessian_a  %*% diff)
     p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE)
@@ -43,7 +43,7 @@ dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y
     
     m <- ncol(y) 
     
-    y.plus <- colSums(x)
+    y.plus <- colSums(y)
     M      <- mean(y.plus)  # Total sum 
     
     
@@ -53,8 +53,8 @@ dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y
     var.x     <-  solve(-H.x)
     var.y     <-  solve(-H.y)
     
-    diff        <-  as.matrix(alpha.x[2:p] - alpha.y[2:p])
-    test.stat   <-   t(diff) %*% solve(var.x + var.y) %*% diff
+    diff        <- as.matrix(alpha.x[2:p] - alpha.y[2:p])
+    test.stat   <- t(diff) %*% solve(var.x + var.y) %*% diff
     p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
   }
   
