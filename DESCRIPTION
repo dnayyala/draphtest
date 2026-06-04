@@ -1,6 +1,6 @@
 Package: draphtest
 Title: Random-projection based hypothesis tests for parameters of Dirichlet and Dirichlet-multinomial distributions
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person(given = "Deepak Nag", family = "Ayyala", email = "deepaknagayyala@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7251-580X")),
