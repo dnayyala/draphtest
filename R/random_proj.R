@@ -9,6 +9,8 @@ random.proj <- function(nrow, ncol, seed=NULL){
   #' @export
   #' @return A matrix of specified dimension with zero-one switch based random projections. The matrix is verified to have full row rank.
   
+  if (!is.null(seed)) set.seed(seed)
+  
   R <- matrix(0, nrow = nrow, ncol = ncol)
   
   repeat{
