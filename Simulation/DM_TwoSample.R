@@ -28,6 +28,7 @@ library(gtools)
 library(ICSNP)
 library(draphtest)
 
+
 ## Set values
 ## args will be a vector of length three containing p, n, k, mu, and diff.rate
 p            <- as.integer(args[1])
@@ -91,7 +92,7 @@ start.time <- Sys.time()
 
 ## STAGE 1
 n.boots  <- 1e3
-m.random <- 1e2
+m.random <- 1e3
 n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
