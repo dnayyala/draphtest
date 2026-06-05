@@ -17,7 +17,7 @@
 # --------------------------------------------------------------------------------------------------
 
 rm(list=ls())
-#setwd("~path")
+output_path <- "C:/Users/bchoi5/OneDrive - UTHealth Houston/Projects/0525 - Random Project/results/"
 args <- commandArgs(trailingOnly = TRUE)
 
 # Load R packages
@@ -49,10 +49,17 @@ theta.x    <- theta.null
 if (diff.rate == 0){
   theta.y = theta.null
 } else {
-  e       <-  min(alpha[-1])  # to give a difference between null & alternative
-  n.equal <- p*(1-diff.rate) 
-  alpha.y <- alpha + e*(1:p >= n.equal)
-  theta.y <- exp(alpha.y - max(alpha.y))/sum(exp(alpha.y - max(alpha.y)))
+  e    <- min(theta.null)
+  
+  n.equal    <- p*(1-diff.rate) 
+  n.diff.u   <- ceiling((p*diff.rate/2))
+  n.diff.l   <- round(p*diff.rate/2)
+  
+  theta.alt1 <- theta.null[1:n.equal]
+  theta.alt2 <- theta.null[(n.equal+1) : (n.equal+n.diff.l)] - e
+  theta.alt3 <- theta.null[(n.equal+n.diff.l+1) : (n.equal+n.diff.l+n.diff.u)] + e
+  
+  theta.y = c(theta.alt1, theta.alt2, theta.alt3)
 }
 
 x   <- t(rdirichlet(n, mu.x*theta.x))
@@ -66,6 +73,7 @@ m.random <- 1e3
 n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
+cl <- makeCluster(n.cores)
 registerDoParallel(cores=n.cores)
 registerDoRNG(seed = 1234)
 
@@ -79,7 +87,7 @@ avg.p.value  <- numeric(m.random)
 avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
         x.boot  <- t(rdirichlet(n, mu.x*theta.null))
         y.boot  <- t(rdirichlet(n, mu.y*theta.null))
-  
+        
   for(m in 1:m.random){
         RP.orth <- ortho.randproj(nrow=k, ncol=p, method = "norm", seed = NULL) # Random projection method using orthogonal for RAPTT 
         RP.prop <- random.proj(k, p) # The proposed random projection method for Wald and LRT
@@ -89,7 +97,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
         
         rx.raptt  <- RP.orth %*% x.boot
         ry.raptt  <- RP.orth %*% y.boot
-        
+
         r.null.theta <- RP.prop %*% theta.null
         r.null.dir   <- log(r.null.theta) - log(r.null.theta[1]);
         r.null.raptt <- RP.orth %*% theta.null
@@ -140,7 +148,7 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .comb
       
       rx.raptt  <- RP.orth %*% x.boot
       ry.raptt  <- RP.orth %*% y.boot
-      
+
       r.null.theta <- RP.prop %*% theta.null
       r.null.dir   <- log(r.null.theta) - log(r.null.theta[1]);
       r.null.raptt <- RP.orth %*% theta.null
@@ -179,9 +187,11 @@ emp.result <- cbind(wald.emp.result, lrt.emp.result, raptt.emp.result)
 colnames(emp.result) <- c("Wald","LRT", "RAPTT"); emp.result
 
 ## Save the above table as csv file
-write.csv(emp.result, file=paste0("Dir_TwoSample_result_p_", args[1], 
-                                  "_n_",                     args[2], 
-                                  "_k_",                     args[3], 
-                                  "_mu.x_",                  args[4], 
-                                  "_mu.y_",                  args[5], 
+write.csv(emp.result, file=paste0("Dir_TwoSample_result_p_", args[1],
+                                  "_n_",                     args[2],
+                                  "_k_",                     args[3],
+                                  "_mu.x_",                  args[4],
+                                  "_mu.y_",                  args[5],
                                   "_DiffRate_",              args[6], ".csv"))
+
+closeAllConnections()
