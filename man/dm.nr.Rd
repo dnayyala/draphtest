@@ -2,24 +2,48 @@
 % Please edit documentation in R/dm_nr.R
 \name{dm.nr}
 \alias{dm.nr}
-\title{Newton-Raphson for Dirichlet-multinomial}
+\title{Newton-Raphson for Dirichlet-multinomial distribution}
 \usage{
-dm.nr(x, mu = NULL, alpha = NULL, tol = 1e-04, maxiters = 100)
+dm.nr(
+  x,
+  y = NULL,
+  mu = NULL,
+  mu.y = NULL,
+  alpha = NULL,
+  tol = 1e-04,
+  maxiters = 100,
+  delta = 1e-04
+)
 }
 \arguments{
-\item{x}{A data matrix of size \eqn{p \times n} generated from \link{p}-dimensional Dirichlet-multinomial distribution.}
+\item{x}{A data matrix of size \eqn{p \times n} generated from \link{p}-dimensional
+Dirichlet-multinomial distribution for group X.}
+
+\item{y}{A data matrix of size \eqn{p \times n} generated from \link{p}-dimensional
+Dirichlet-multinomial distribution for gropu Y.}
 
 \item{mu}{A scalar parameter which represents the dispersion parameter of the distribution}
+
+\item{mu.y}{Dispersion parameter for y. If NULL, estimated from data.}
 
 \item{alpha}{Vector of length p which represents the log-transformed mean vector of the distribution.}
 
 \item{tol}{Tolerance cutoff for determining convergence of the Newton-Raphson algorithm}
 
 \item{maxiters}{Maximum number of iterations for the algorithm. Default is set at 100.}
+
+\item{delta}{Threshold below which theta components are held fixed.}
 }
 \value{
 the function will return a vector of length \eqn{p} containing the estimate of the param alpha and a the estimate of mu
 }
 \description{
-Newton-Rapshon algorithm to estimate parameter alpha (or theta) of the Dirichlet-multinomial distribution
+Newton-Rapshon algorithm to estimate parameters of the
+Dirichlet-multinomial distribution. Supports two modes:
+\itemize{
+\item \strong{One-sample} (y = NULL): estimates mu and alpha jointly from x.
+\item \strong{Two-sample} (y supplied): estimates mu.x and mu.y separately
+from each group, then fixes them while estimating a common alpha
+from the combined likelihood. This avoids bias when mu_x != mu.y.
+}
 }
