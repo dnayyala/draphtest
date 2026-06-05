@@ -36,7 +36,7 @@ k            <- as.integer(args[3])
 mu.x         <- as.integer(args[4])
 mu.y         <- as.integer(args[5])
 diff.rate    <- as.integer(args[6])
-type1err     <- 0.05   # Significance level
+
 
 
 set.seed(1234)
@@ -46,16 +46,23 @@ alpha      <- c(0, rgamma(p-1, 3, 5))
 theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
 theta.x    <- theta.null
 
-# Generate parameters (theta) in sample Y 
-# Generate parameter vector of theta in sample Y 
 if (diff.rate == 0){
   theta.y = theta.null
 } else {
-  e       <-  min(alpha[-1])  # to give a difference between null & alternative
-  n.equal <- p*(1-diff.rate) 
-  alpha.y <- alpha + e*(1:p >= n.equal)
-  theta.y <- exp(alpha.y - max(alpha.y))/sum(exp(alpha.y - max(alpha.y)))
+  e    <- min(theta.null)
+  
+  n.equal    <- p*(1-diff.rate) 
+  n.diff.u   <- ceiling((p*diff.rate/2))
+  n.diff.l   <- round(p*diff.rate/2)
+  
+  theta.alt1 <- theta.null[1:n.equal]
+  theta.alt2 <- theta.null[(n.equal+1) : (n.equal+n.diff.l)] - e
+  theta.alt3 <- theta.null[(n.equal+n.diff.l+1) : (n.equal+n.diff.l+n.diff.u)] + e
+  
+  theta.y = c(theta.alt1, theta.alt2, theta.alt3)
 }
+
+
 
 
 lambda <- 1e4  # empirical type 1 error (alpha) is related to the lambda value
@@ -84,7 +91,7 @@ start.time <- Sys.time()
 
 ## STAGE 1
 n.boots  <- 1e3
-m.random <- 1e3
+m.random <- 1e2
 n.total  <- 1e3
 
 n.cores <- detectCores()*0.75
@@ -158,7 +165,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'),
   
 }
 
-cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
+cut.off <- apply(avg.p.value, 2, quantile, probs = 0.05)
 
 # STEP 2
 p.value.wald  <- numeric(m.random)
@@ -231,10 +238,13 @@ raptt.emp.result  <- mean(mean.p[,3] < cut.off[3]); raptt.emp.result
 emp.result <- cbind(wald.emp.result, lrt.emp.result, raptt.emp.result)
 colnames(emp.result) <- c("Wald","LRT", "RAPTT"); emp.result
 
-## Save the above table as csv file
-write.csv(emp.result, file=paste0("DM_TwoSample_result_p_", args[1], 
-                                  "_n_",                    args[2], 
-                                  "_k_",                    args[3], 
-                                  "_mu.x_",                 args[4], 
-                                  "_mu.y_",                 args[5], 
+# ## Save the above table as csv file
+write.csv(emp.result, file=paste0("DM_TwoSample_result_p_", args[1],
+                                  "_n_",                    args[2],
+                                  "_k_",                    args[3],
+                                  "_mu.x_",                 args[4],
+                                  "_mu.y_",                 args[5],
                                   "_DiffRate_",             args[6], ".csv"))
+closeAllConnections()
+emp.result
+running.time
