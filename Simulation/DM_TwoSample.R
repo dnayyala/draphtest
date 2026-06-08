@@ -1,4 +1,3 @@
-
 # --------------------------------------------------------------------------------------------------
 # Simulation for empirical type I error & power of two-sample test 
 #
@@ -16,7 +15,7 @@
 #   args[6]: diff.rate     - effect size (Type I error = 0, Power = 0.05/0.1/0.2)
 # --------------------------------------------------------------------------------------------------
 rm(list=ls())
-#setwd("~path")
+output_path <- "C:/Users/bchoi5/OneDrive - UTHealth Houston/Projects/0525 - Random Project/results/"
 args <- commandArgs(trailingOnly = TRUE)
 
 # R packages
@@ -36,8 +35,7 @@ n            <- as.integer(args[2])
 k            <- as.integer(args[3])
 mu.x         <- as.integer(args[4])
 mu.y         <- as.integer(args[5])
-diff.rate    <- as.integer(args[6])
-
+diff.rate    <- as.numeric(args[6])
 
 
 set.seed(1234)
