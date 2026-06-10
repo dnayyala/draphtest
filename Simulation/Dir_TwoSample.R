@@ -17,7 +17,6 @@
 # --------------------------------------------------------------------------------------------------
 
 rm(list=ls())
-output_path <- "C:/Users/bchoi5/OneDrive - UTHealth Houston/Projects/0525 - Random Project/results/"
 args <- commandArgs(trailingOnly = TRUE)
 
 # Load R packages
@@ -49,7 +48,7 @@ theta.x    <- theta.null
 if (diff.rate == 0){
   theta.y = theta.null
 } else {
-  e    <- min(theta.null)
+  e    <- 0.5*min(theta.null)
   
   n.equal    <- p*(1-diff.rate) 
   n.diff.u   <- ceiling((p*diff.rate/2))
