@@ -1,4 +1,4 @@
-dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = NULL,  type = "one"){
+dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y = NULL,  type = "one"){
   #' @title Wald test statistic for Dirichlet distribution
   #' 
   #' @description Wald-type test to parameter alpha of the Dirichlet distribution
@@ -28,12 +28,12 @@ dir.wald <- function(x, y, mu.x, mu.y = NULL, alpha = NULL, alpha.x, alpha.y = N
   
   if (type == "one"){
     ## Check if data and parameter dimensions match
-    if (length(alpha.x) != p || length(alpha) != p){
+    if (length(alpha.x) != p || length(alpha.null) != p){
       stop("Data and parameter dimensions do not match.")
     }
     
     Hessian_a   <- dir.hessian(x, mu.x, alpha.x, param = "alpha")  
-    diff        <-  as.matrix(alpha.x[2:p] - alpha[2:p])
+    diff        <-  as.matrix(alpha.x[2:p] - alpha.null[2:p])
     
     test.stat   <- (t(diff) %*%  -Hessian_a  %*% diff)
     p.value     <- pchisq(test.stat, df=p-1, lower.tail=FALSE)
