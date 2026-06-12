@@ -164,7 +164,7 @@ dm.nr <- function(x, y = NULL, mu = NULL, mu.y = NULL, alpha = NULL,
     
     mu.hat <- (theta1*N*(N-theta1) - var.x)/(var.x - theta1*N*(1-theta1))
     mu.hat <- mu.hat[is.finite(mu.hat)]
-    mu1[1] <-  max(mean(mu.hat), 1e-3) # prevent mu.hat goes negative value
+    mu1[1] <- max(mean(mu.hat), 1e-3) # prevent mu.hat goes negative value
   } else {
     mu1[1] <- mu
   }
