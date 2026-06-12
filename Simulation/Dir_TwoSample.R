@@ -40,7 +40,7 @@ type1err     <- 0.05   # Significance level
 
 # Generate Dirichlet random variables
 set.seed(1234)
-alpha      <- c(0, rgamma(p-1, 3, 5))
+alpha      <- c(0, rgamma(p-1, 3, 2))
 theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
 theta.x    <- theta.null
 
@@ -48,7 +48,7 @@ theta.x    <- theta.null
 if (diff.rate == 0){
   theta.y = theta.null
 } else {
-  e    <- 0.5*min(theta.null)
+  e    <- 0.99 * min(theta.null)
   
   n.equal    <- p*(1-diff.rate) 
   n.diff.u   <- ceiling((p*diff.rate/2))
@@ -80,7 +80,6 @@ registerDoRNG(seed = 1234)
 p.value.wald  <- numeric(m.random)
 p.value.lrt   <- numeric(m.random)
 p.value.raptt <- numeric(m.random)
-
 
 avg.p.value  <- numeric(m.random)
 avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
@@ -118,7 +117,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
         p.value.wald[m] <- dir.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                         alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
         p.value.lrt[m] <- dir.lrt(x=rx.dir, y=ry.dir, mu.x=r.mu.x, mu.y= r.mu.y, alpha=alpha.est.dir, 
-                                      alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir)$p.value
+                                      alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
         p.value.raptt[m] <- HotellingsT2(t(rx.raptt), t(ry.raptt), test = "chi")$p.value
     
   }
@@ -167,7 +166,7 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .comb
       p.value.wald[m] <- dir.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                   alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
       p.value.lrt[m] <- dir.lrt(x=rx.dir, y=ry.dir, mu.x=r.mu.x, mu.y= r.mu.y, alpha=alpha.est.dir, 
-                                alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir)$p.value
+                                alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
       p.value.raptt[m] <- HotellingsT2(t(rx.raptt), t(ry.raptt), test = "chi")$p.value
   }
   c(mean(p.value.wald), mean(p.value.lrt), mean(p.value.raptt)) 
