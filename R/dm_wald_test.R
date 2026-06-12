@@ -1,4 +1,4 @@
-dm.wald <- function(x, y, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y = NULL,  type = "one"){
+dm.wald <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.null = NULL, alpha.x, alpha.y = NULL,  type = "one"){
   #' @title Wald-type test for parameter alpha
   #' 
   #' @description This function computes the Wald-type test statistic for testing equality of parameters of one and two sample Dirichlet-multinomial distribution
