@@ -35,7 +35,7 @@ k            <- as.integer(args[3])
 mu.x         <- as.integer(args[4])
 mu.y         <- as.integer(args[5])
 diff.rate    <- as.numeric(args[6])
-
+type1err     <- 0.05 
 
 set.seed(1234)
 ## Generate Dirichlet-multinomial random variables
@@ -163,7 +163,7 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'),
   
 }
 
-cut.off <- apply(avg.p.value, 2, quantile, probs = 0.05)
+cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
 
 # STEP 2
 p.value.wald  <- numeric(m.random)
