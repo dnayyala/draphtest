@@ -116,8 +116,8 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
         
         p.value.wald[m] <- dir.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                         alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
-        p.value.lrt[m] <- dir.lrt(x=rx.dir, y=ry.dir, mu.x=r.mu.x, mu.y= r.mu.y, alpha=alpha.est.dir, 
-                                      alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
+        p.value.lrt[m] <- dir.lrt(x=rx.dir, y=ry.dir, mu.x=r.mu.x, mu.y= r.mu.y, 
+                                  alpha.null=alpha.est.dir, alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
         p.value.raptt[m] <- HotellingsT2(t(rx.raptt), t(ry.raptt), test = "chi")$p.value
     
   }
@@ -160,12 +160,13 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .comb
       alpha.y.est.dir <- unlist(parm.y.est$alpha)
       r.mu.y <- parm.y.est$mu
       
-      r.total <- cbind(rx.dir, ry.dir); 
-      alpha.est.dir  <- unlist(dir.nr(r.total)$alpha)
+      # Estimate common theta parameter 
+      fit.common    <- dir.nr(x = rx.dir, y = ry.dir)
+      alpha.est.dir <- unlist(fit.common$alpha)
      
       p.value.wald[m] <- dir.wald(x=rx.dir, y=ry.dir, mu.x = r.mu.x, mu.y = r.mu.y, 
                                   alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
-      p.value.lrt[m] <- dir.lrt(x=rx.dir, y=ry.dir, mu.x=r.mu.x, mu.y= r.mu.y, alpha=alpha.est.dir, 
+      p.value.lrt[m] <- dir.lrt(x=rx.dir, y=ry.dir, mu.x=r.mu.x, mu.y= r.mu.y, alpha.null=alpha.est.dir, 
                                 alpha.x = alpha.x.est.dir, alpha.y=alpha.y.est.dir, type="two")$p.value
       p.value.raptt[m] <- HotellingsT2(t(rx.raptt), t(ry.raptt), test = "chi")$p.value
   }
