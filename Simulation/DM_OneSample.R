@@ -16,7 +16,6 @@
 # --------------------------------------------------------------------------------------------------
 
 rm(list=ls())
-#setwd("~path")
 args <- commandArgs(trailingOnly = TRUE)
 
 # R packages
@@ -35,7 +34,7 @@ p          <- as.integer(args[1])
 n          <- as.integer(args[2]) 
 k          <- as.integer(args[3])
 mu         <- as.integer(args[4])
-diff.rate  <- as.integer(args[5]) 
+diff.rate  <- as.numeric(args[5]) 
 type1err   <- 0.05 
 
 # Generate Dirichlet random variables
@@ -48,10 +47,17 @@ theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
 if (diff.rate == 0){
   theta.alt = theta.null
 } else {
-  e         <- min(alpha[-1]) # to add a difference between null & alternative
-  n.equal   <- p*(1-diff.rate) 
-  alpha.alt <- alpha + e*(1:p >= n.equal)
-  theta.alt <- exp(alpha.alt - max(alpha.alt))/sum(exp(alpha.alt - max(alpha.alt)))
+  e         <- 0.99 * min(theta.null) 
+  
+  n.equal    <- p*(1-diff.rate) 
+  n.diff.u   <- ceiling((p*diff.rate/2))
+  n.diff.l   <- round(p*diff.rate/2)
+  
+  theta.alt1 <- theta.null[1:n.equal]
+  theta.alt2 <- theta.null[(n.equal+1) : (n.equal+n.diff.l)] - e
+  theta.alt3 <- theta.null[(n.equal+n.diff.l+1) : (n.equal+n.diff.l+n.diff.u)] + e
+  
+  theta.alt = c(theta.alt1, theta.alt2, theta.alt3)
 }
 
 # Generate Dirichlet-multinomial distribution random variables
@@ -174,3 +180,6 @@ write.csv(emp.result, file=paste0("DM_OneSample_result_p_", args[1],
                                   "_k_",                    args[3], 
                                   "_mu_",                   args[4],
                                   "_DiffRate_",             args[5], ".csv"))
+closeAllConnections()
+emp.result
+running.time
