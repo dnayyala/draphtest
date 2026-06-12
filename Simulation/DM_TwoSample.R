@@ -40,7 +40,7 @@ type1err     <- 0.05
 set.seed(1234)
 ## Generate Dirichlet-multinomial random variables
 # Generate parameters
-alpha      <- c(0, rgamma(p-1, 3, 5))
+alpha      <- c(0, rgamma(p-1, 3, 2))
 theta.null <- exp(alpha - max(alpha))/sum(exp(alpha - max(alpha)))
 theta.x    <- theta.null
 
