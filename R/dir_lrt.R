@@ -1,4 +1,4 @@
-dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alpha , type = "one"){
+dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alpha.null, type = "one"){
     #' @title Likelihood ratio test for Dirichlet distribution
     #' 
     #' @description Likelihood-ratio test for the parameter alpha of the Dirichlet distribution
@@ -19,7 +19,7 @@ dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alp
     #'    \item p value
     #' }
     
-  p <- length(alpha) # the number of parameters
+   p <- length(alpha.null) # the number of parameters
   
   if (is.null(mu.y)){
     type <- "one"
@@ -29,24 +29,24 @@ dir.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alp
 
     if (type == "one"){
         ## Check if data and parameter dimensions match
-        if (length(alpha.x) && length(alpha) != p){
+        if (length(alpha.x) != p || length(alpha.null) != p){
             stop("Data and parameter dimensions do not match.")
         }
         
     #' test statistic of LRT 
     test.stat <- -2 * (
-                 dir.lkhd(x=x, mu=mu.x, alpha = alpha) # log-likelihood under the null 
-               - dir.lkhd(x=x, mu=mu.x, alpha = alpha.x)) # log-likelihood under the alternative
+                 dir.lkhd(x=x, mu=mu.x, alpha = alpha.null) # log-likelihood under the null 
+               - dir.lkhd(x=x, mu=mu.x, alpha = alpha.x))   # log-likelihood under the alternative
  
     p.value   <- pchisq(test.stat, df=p-1, lower.tail=FALSE) 
     
     } else if (type == "two"){
         
-        if (length(alpha.x) && length(alpha.y) != p){
+        if (length(alpha.x) != p || length(alpha.y) != p){
             stop("Data and parameter dimensions do not match.")
         }
         
-    test.stat <-  -2* (dir.lkhd(x, mu.x, alpha) + dir.lkhd(y, mu.y, alpha)
+    test.stat <-  -2* (dir.lkhd(x, mu.x, alpha.null) + dir.lkhd(y, mu.y, alpha.null)
                 - dir.lkhd(x, mu.x, alpha.x)- dir.lkhd(y, mu.y, alpha.y))
     
      p.value <- pchisq(test.stat, df=p-1, lower.tail=FALSE)
