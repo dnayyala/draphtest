@@ -162,7 +162,7 @@ dir.nr <- function(x, y =NULL, mu = NULL, mu.y = NULL, alpha = NULL,
     var_x <- pmax(var_x, 1e-10)
     mu.hat <- (theta*(1-theta))/var_x  - 1
     mu.hat <- mu.hat[is.finite(mu.hat)]
-    mu1[1] <-  mean(mu.hat)
+    mu1[1] <- max(mean(mu.hat), 1e-3) # prevent mu.hat goes negative value
   } else {
     mu1[1] <- mu
   }
