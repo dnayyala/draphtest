@@ -94,8 +94,10 @@ avg.p.value = foreach(i=1:n.boots, .packages=c('gtools', 'ICSNP', 'draphtest'), 
     alpha.est  <- unlist(parm.est$alpha)
     r.mu.boot  <- parm.est$mu
     
-    p.value.wald[m]  <- dir.wald(x=rx.dir, mu.x = r.mu.boot, alpha = r.null.dir, alpha.x=alpha.est)$p.value
-    p.value.lrt[m]   <- dir.lrt(x=rx.dir, mu.x = r.mu.boot, alpha = r.null.dir, alpha.x=alpha.est)$p.value
+    p.value.wald[m]  <- dir.wald(x=rx.dir, mu.x = r.mu.boot, 
+                                 alpha.null = r.null.dir, alpha.x=alpha.est)$p.value
+    p.value.lrt[m]   <- dir.lrt(x=rx.dir, mu.x = r.mu.boot, 
+                                alpha.null = r.null.dir, alpha.x=alpha.est)$p.value
     p.value.raptt[m] <- HotellingsT2(t(rx.raptt), mu = r.null.raptt, test = "chi")$p.value
   }
   c(mean(p.value.wald), mean(p.value.lrt), mean(p.value.raptt))
@@ -107,7 +109,7 @@ cut.off <- apply(avg.p.value, 2, quantile, probs = type1err)
 p.value <- numeric(m.random)
 mean.p  <- numeric(n.total)
 
-mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') %dorng%  {
+mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP', 'draphtest'), .combine='rbind') %dorng%  {
   
   x.boot  <- t(rdirichlet(n, mu*theta.alt)) # the Bootstrap sample under the alternative hypothesis
   
@@ -130,8 +132,10 @@ mean.p = foreach(i=1:n.total, .packages=c('gtools', 'ICSNP'), .combine='rbind') 
     alpha.est  <- unlist(parm.est$alpha)
     r.mu.boot  <- parm.est$mu
     
-    p.value.wald[m]  <- dir.wald(x=rx.dir, mu.x = r.mu.boot, alpha = r.null.dir, alpha.x=alpha.est)$p.value
-    p.value.lrt[m]   <- dir.lrt(x=rx.dir, mu.x= r.mu.boot, alpha=r.null.dir, alpha.x=alpha.est)$p.value
+    p.value.wald[m]  <- dir.wald(x=rx.dir, mu.x = r.mu.boot, 
+                                 alpha.null = r.null.dir, alpha.x=alpha.est)$p.value
+    p.value.lrt[m]   <- dir.lrt(x=rx.dir, mu.x= r.mu.boot, 
+                                alpha.null=r.null.dir, alpha.x=alpha.est)$p.value
     p.value.raptt[m] <- HotellingsT2(t(rx.raptt), mu = r.null.raptt, test = "chi")$p.value
   }
   c(mean(p.value.wald), mean(p.value.lrt), mean(p.value.raptt)) 
