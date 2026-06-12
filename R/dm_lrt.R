@@ -1,4 +1,4 @@
-dm.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alpha.null , type = "one"){
+dm.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alpha.null, type = "one"){
     #' @title Likelihood ratio test for Dirichlet multinomial distribution
     #' 
     #' @description Likelihood-ratio test to parameter alpha of the Dirichlet-multinomial distribution
@@ -19,9 +19,9 @@ dm.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alph
     n <- ncol(x) # the number of parameters
     
     if (is.null(mu.y)){
-        type = "one"
+        type <- "one"
     } else {
-        type = "two"
+        type <- "two"
     }
     
     if (type == "one"){
@@ -41,7 +41,7 @@ dm.lrt <- function(x, y = NULL, mu.x, mu.y = NULL, alpha.x, alpha.y = NULL, alph
     
     } else if (type == "two"){
     
-    if (length(alpha.x) && length(alpha.y) != p){
+    if (length(alpha.x) != p || length(alpha.y) != p){
         stop("Data and parameter dimensions do not match.")
     }
  
